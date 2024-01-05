@@ -1,0 +1,7 @@
+# das Folgende installiert "docker" als Container-Plattform, optional kann man auch "podman" verwenden, die Syntax ist meist ident
+sudo -s
+snap install docker
+
+# Für die Übungen verwenden wir Postgres und Oracle, folgende Scripts installieren und testen die beiden Container
+01_docker_postgres.txt
+01_docker_oracle.txt
