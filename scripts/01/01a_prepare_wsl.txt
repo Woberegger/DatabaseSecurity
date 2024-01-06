@@ -1,4 +1,6 @@
 ## Anleitung, um ein frisches wsl (Windows Subsystem for Linux) vorzubereiten - geht schneller und einfacher als mit virtueller Maschine
+# Damit WSL generell funktioniert, muss Windows 10, Version 2004 und höher (Build 19041 und höher) oder Windows 11 installiert sein
+
 # wir verwenden eine neue, frische Distro, damit eine ev. bereits installierte Distribution nicht beeinflusst wird
 # siehe z.B. Anleitung unter https://superuser.com/questions/1515246/how-to-add-second-wsl2-ubuntu-distro-fresh-install
 

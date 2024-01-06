@@ -9,11 +9,73 @@ docker run -d --name $DOCKER_CONTAINERNAME container-registry.oracle.com/databas
 docker exec $DOCKER_CONTAINERNAME ./setPassword.sh FhIms2024
 # verbinde mit der Datenbank mit sqlplus innerhalb des Containers und zeige an, welche pdbs und welche user es gibt
 # über --tty=false kann man eine Kommandosequenz als Here-Document übergeben
+# das "-s" bei sqlplus gibt keinen SQL-Prompt und zeigt keinen SQL-Startscreen, ist daher bei nicht-interaktiven Kommandos anzuraten, sonst aber nicht
 docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
    show pdbs;
-   set lines 300 pages 0;
-   select UserName, user_id from all_users order by 2 asc;
+   SET lines 300 pages 0;
+   SELECT UserName, user_id FROM all_users ORDER BY 2 ASC;
 !
+# zeige letzte Ausgaben des Oracle Alert-Logs
+docker logs $DOCKER_CONTAINERNAME
+
+# jetzt legen wir eine eigene Pluggable DB an als Kopie der Default-DB "FREEPDB1"
+docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
+   SET lines 300 pages 0;
+   -- Zeige die Struktur der Files an, damit wir das dann im File_Name_Convert analog dazu anlegen
+   SELECT FILE_NAME FROM dba_data_files;
+   CREATE Pluggable Database IMS FROM FREEPDB1 FILE_NAME_CONVERT=('/opt/oracle/oradata/FREE/FREEPDB1/','/opt/oracle/oradata/FREE/IMS/');
+   -- Wechsle in den existierenden Container
+   ALTER Pluggable Database IMS OPEN;
+   ALTER session SET container=IMS;
+   SELECT FILE_NAME FROM dba_data_files;
+!
+# wir müssen einen tns-Alias für die neue DB anlegen, damit wir mit user/pwd@PluggableDB uns anmelden können
+docker exec -it $DOCKER_CONTAINERNAME /bin/bash
+cat >>/opt/oracle/product/23c/dbhomeFree/network/admin/tnsnames.ora <<!
+IMS =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 0.0.0.0)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = IMS)
+    )
+  )
+! 
+  
+# damit wir später saubere Trennung haben, legen wir eigenen Tablespace für Daten und Indizes an
+docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
+   -- WICHTIG: bei den meisten unserer Test-Anwendungen müssen wir in die jeweilige PDB wechseln, also das "ALTER SESSION" nicht vergessen!!!
+   ALTER session SET container=IMS;
+   CREATE TABLESPACE data DATAFILE '/opt/oracle/oradata/FREE/IMS/data.dbf' SIZE 16m AUTOEXTEND ON;
+   CREATE TABLESPACE indexes DATAFILE '/opt/oracle/oradata/FREE/IMS/indexes.dbf' SIZE 8m AUTOEXTEND ON;
+   SELECT FILE_NAME, auto_extent FROM dba_data_files;
+   SELECT tablespace_name, INITIAL_EXTENT, NEXT_EXTENT, ENCRYPTED, EXTENT_MANAGEMENT FROM DBA_TableSpaces;
+!
+
+# und dann legen wir noch einen Applikationsuser in unserer PDB an, unter dem dann die Tabellen installiert werden
+docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
+   ALTER session SET container=IMS;
+   -- zuvor legen wir noch eine Rolle an, damit wir die dann dem User geben, bei einem weiteren User können wir dieselbe Rolle weiterverwenden
+   CREATE Role Application;
+   CREATE USER Ims IDENTIFIED BY FhIms2024 DEFAULT TABLESPACE DATA TEMPORARY TABLESPACE TEMP;
+   GRANT CONNECT, RESOURCE, CREATE TABLE, CREATE PROCEDURE, CREATE VIEW, CREATE DATABASE LINK, CREATE SYNONYM, CREATE ANY DIRECTORY TO Application;
+   GRANT CONNECT, RESOURCE, UNLIMITED TABLESPACE, Application TO Ims;
+!
+
+# und dann verbinden wir uns testweise mit dem neu angelegten User, der sollte zumindest ein paar Systemtabellen finden, eigene gibt es noch keine
+docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s ims/FhIms2024@IMS <<!
+   SELECT Table_Name FROM All_Tables WHERE RowNum<=10;
+   prompt hier wird erwarteterweise noch nichts gefunden
+   SELECT * FROM cat;
+!
+
+### wenn man später die Pluggable DB droppen und neu anlegen will, muss man wie folgt vorgehen (Statements auskommentiert)
+#docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
+#   alter pluggable database IMS close;
+#   alter pluggable database IMS unplug into '/opt/oracle/oradata/ims.xml';
+#   drop pluggable database IMS INCLUDING DATAFILES;
+#!
+
 
 ### optional kann man instantclient installieren und damit sqlplus von ausserhalb verwenden, ist aber nicht nötig...
 #cd /usr/local
