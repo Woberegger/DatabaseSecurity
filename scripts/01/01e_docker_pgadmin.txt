@@ -13,9 +13,3 @@ docker network inspect my-docker-network
 
 # in pgAdmin auf der Webseite http://localhost:5050 für die Serververbindung diejenige IP angeben, die hier für den Container "Postgres" angezeigt wird,
 # also z.B. 172.20.160.2
-
-# Später verwenden wir folgende Datei zum Reinladen, wir müssen diese in den laufenden Container reinkopieren
-# (das "git clone" nur dann auszuführen, falls dies nicht schon gemacht wurde)
-cd ~
-git clone https://github.com/Woberegger/DatabaseSecurity
-docker cp DatabaseSecurity/data/dvdrental.tar pgadmin4:/tmp/dvdrental.tar
