@@ -16,4 +16,4 @@ docker network inspect my-docker-network
 # also z.B. 172.20.160.2
 
 ###### später, wenn der Container runtergefahren wurde, wie folgt vorgehen zum Wiederhochfahren und Einloggen #########
-docker start $(docker ps -a | grep pgadmin4 | cut -f1 -d' ')
+docker start pgadmin4
