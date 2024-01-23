@@ -3,5 +3,5 @@ sudo -s
 snap install docker
 
 # Für die Übungen verwenden wir Postgres und Oracle, folgende Scripts installieren und testen die beiden Container
-01c_docker_postgres.txt
-01d_docker_oracle.txt
+01c_docker_postgres.md
+01d_docker_oracle.md

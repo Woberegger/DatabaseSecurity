@@ -6,9 +6,9 @@ export DOCKER_CONTAINERNAME=Postgres
 # ich habe als IP-Range und Gateway die genommen, die bei "ipconfig" auf dem Host für Adapter "WSL" aufscheint
 export NETWORK=my-docker-network
 docker network create --driver=bridge --subnet=172.20.160.0/24 --ip-range=172.20.160.0/24 --gateway=172.20.160.1 $NETWORK
-# additionally set "-e POSTGRES_USER=postgres"
+# zusätzlich setze "-e POSTGRES_USER=postgres", dass als dieser DB-User eingeloggt wird
 docker run --name $DOCKER_CONTAINERNAME --network ${NETWORK} -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=my-secret-pw -d postgres:latest
-#interaktiver login über psql SQL-Commandline in den laufenden Container
+# interaktiver login über psql SQL-Commandline in den laufenden Container
 # über --tty=false kann man eine Kommandosequenz als Here-Document übergeben
 docker exec -i --tty=false -u postgres ${DOCKER_CONTAINERNAME} psql <<!
    CREATE ROLE scott LOGIN PASSWORD 'FhIms2024';

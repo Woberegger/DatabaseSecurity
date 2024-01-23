@@ -8,7 +8,7 @@ export DOCKER_CONTAINERNAME=Oracle23Free
 # damit der listener-Port 1521 von extern zugreifbar ist, muss dieser über "p xxx:xxx" freigegeben werden
 docker run -d --name $DOCKER_CONTAINERNAME -p 1521:1521 container-registry.oracle.com/database/free:latest
 docker exec $DOCKER_CONTAINERNAME ./setPassword.sh FhIms2024
-#
+
 # verbinde mit der Datenbank mit sqlplus innerhalb des Containers und zeige an, welche pdbs und welche user es gibt
 # über --tty=false kann man eine Kommandosequenz als Here-Document übergeben
 # das "-s" bei sqlplus gibt keinen SQL-Prompt und zeigt keinen SQL-Startscreen, ist daher bei nicht-interaktiven Kommandos anzuraten, sonst aber nicht
@@ -72,7 +72,7 @@ docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s ims/FhIms2024@IMS <<
 !
 
 ### wenn man später die Pluggable DB droppen und neu anlegen will, muss man wie folgt vorgehen (Statements auskommentiert)
-#docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
+# docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
 #   alter pluggable database IMS close;
 #   alter pluggable database IMS unplug into '/opt/oracle/oradata/ims.xml';
 #   drop pluggable database IMS INCLUDING DATAFILES;
@@ -83,13 +83,13 @@ docker start Oracle23Free
 docker exec -it Oracle23Free sqlplus / as sysdba
 
 ### optional kann man instantclient installieren und damit sqlplus von ausserhalb verwenden, ist aber nicht nötig...
-#cd /usr/local
-#mkdir instantclient
-#cd instantclient
-#wget https://download.oracle.com/otn_software/linux/instantclient/23c/instantclient-basic-linux.x64-23.3.0.0.0.zip
-#wget https://download.oracle.com/otn_software/linux/instantclient/23c/instantclient-sqlplus-linux.x64-23.3.0.0.0.zip
-#unzip instantclient-sqlplus-linux.x64-23.3.0.0.0.zip
-#export PATH=$PATH:/usr/local/instantclient/instantclient_23_3
-#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/instantclient/instantclient_23_3
-#
-#sqlplus sys@localhost:1521/FREEPDB1 as sysdba
+# cd /usr/local
+# mkdir instantclient
+# cd instantclient
+# wget https://download.oracle.com/otn_software/linux/instantclient/23c/instantclient-basic-linux.x64-23.3.0.0.0.zip
+# wget https://download.oracle.com/otn_software/linux/instantclient/23c/instantclient-sqlplus-linux.x64-23.3.0.0.0.zip
+# unzip instantclient-sqlplus-linux.x64-23.3.0.0.0.zip
+# export PATH=$PATH:/usr/local/instantclient/instantclient_23_3
+# export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/instantclient/instantclient_23_3
+
+sqlplus sys@localhost:1521/FREEPDB1 as sysdba
