@@ -22,4 +22,5 @@ docker exec -i --tty=false -u postgres ${DOCKER_CONTAINERNAME} psql <<!
 
 ###### später, wenn der Container runtergefahren wurde, wie folgt vorgehen zum Wiederhochfahren und Einloggen #########
 docker start Postgres
+sleep 3 # give the container some time to start up
 docker exec -it -u postgres Postgres psql
