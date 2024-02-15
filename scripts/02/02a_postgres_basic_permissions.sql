@@ -5,8 +5,10 @@ CREATE ROLE ApplicationUser WITH CREATEDB;
 CREATE USER ObjectOwner PASSWORD 'my-secret-pw' IN ROLE ApplicationUser; 
 CREATE USER ReadOnly WITH Login CONNECTION LIMIT 1 PASSWORD 'read-only-pw';
 -- we need to create a schema, where the new users are allowed to create their objects
-CREATE SCHEMA dvd;
-GRANT USAGE, CREATE ON SCHEMA dvd TO ApplicationUser;
+CREATE SCHEMA IF NOT EXISTS dvd;
+GRANT USAGE, CREATE ON SCHEMA dvd TO ApplicationUser,Scott;
+-- no object creation allowed, but it needs to e.g. select from that schema
+GRANT USAGE ON SCHEMA dvd to ReadOnly;
 --
 SET Role Scott;
 -- now see difference in output between current_user and session_user (here the one, which owns the objects)
@@ -14,9 +16,10 @@ SELECT current_user, session_user;
 -- switch to the proper database, where our objects reside
 \c dvdrental
 -- describe one of the tables to see, if they exist
-\d customer
+\d dvd.customer
+SET search_path TO dvd, public;
 -- and create a view on those tables, which we want to grant
-CREATE OR REPLACE VIEW customer_list
+CREATE OR REPLACE VIEW dvd.customer_list
 AS
 SELECT cu.customer_id AS id,
     (((cu.first_name)::text || ' '::text) || (cu.last_name)::text) AS name,
@@ -44,11 +47,12 @@ GRANT UPDATE (country) ON country TO ObjectOwner;
 
 -- now try with the read-only user
 SET Role ReadOnly;
+SET search_path TO dvd, public;
 -- the describe command works, as before we have already switched to that database
 \d customer_list;
 SELECT * FROM Customer_List LIMIT 5;
 -- the following is expected to fail because of missing permissions
-SELECT * FROM Address LIMIT 3;
+SELECT * FROM dvd.Address LIMIT 3;
 -- # ERROR:  permission denied for table address
 
 -- now we try the user "ObjectOwner" ...
