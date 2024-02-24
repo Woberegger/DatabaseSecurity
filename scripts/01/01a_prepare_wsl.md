@@ -11,6 +11,10 @@ dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux 
 dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
 wsl --set-default-version 2
 
+# falls man Fehlermeldung "The service cannot be started, either because it is disabled or because it has no enabled devices associated with it",
+# könnte es am Virenscanner liegen, der wsl blockiert. Für Kaspersky z.B. ist folgendes Kommando nötig
+# sc config LxssManager start=auto
+
 # 3. Installieren und Aktivieren dieser Distro in cmd.exe
 # (Annahme: dass der Download der Datei .\ubuntu-mantic-wsl-amd64-wsl.rootfs.tar.gz nach %USERPROFILE%\Downloads gemacht wurde)
 

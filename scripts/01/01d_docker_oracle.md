@@ -2,7 +2,7 @@
 # man kann podman oder docker verwenden, um die Container zu betreiben
 # see https://container-registry.oracle.com/ords/f?p=113:4:106648115637034:::4:P4_REPOSITORY,AI_REPOSITORY,AI_REPOSITORY_NAME,P4_REPOSITORY_NAME,P4_EULA_ID,P4_BUSINESS_AREA_ID:1863,1863,Oracle%20Database%20Free,Oracle%20Database%20Free,1,0&cs=3vh3v7Bx-M1AhcZcni5BZw08qK4bc49cPe_X8TG5ZkK6Z8YJb6F_7s-kOEqsi9ahcAJrOaMTAC5QDMo1FbyMgWA
 
-sudo -s
+# Das Image ist ca. 14 GB gross, d.h. bitte auf ausreichend Speicher prüfen
 docker pull container-registry.oracle.com/database/free:latest
 export DOCKER_CONTAINERNAME=Oracle23Free
 # damit der listener-Port 1521 von extern zugreifbar ist, muss dieser über "p xxx:xxx" freigegeben werden

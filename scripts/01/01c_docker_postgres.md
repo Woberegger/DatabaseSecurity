@@ -1,5 +1,4 @@
 # Postgres container download und erster Test, indem wir eine Datenbank anlegen
-sudo -s
 docker pull postgres
 export DOCKER_CONTAINERNAME=Postgres
 # damit die einzelnen Container miteinander kommunizieren können, müssen wir sie ins selbe virtuelle Netzwerk reinhängen
