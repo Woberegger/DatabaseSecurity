@@ -1,16 +1,16 @@
 -- monitor changes in the following 3 tables
--- we do this as "Postgres" user, who owns the tables
+-- we do this as "postgres" user, who owns the tables
 \c dvdrental
-set role Postgres;
+set role postgres;
 SET search_path TO dvd, public;
 SELECT audit.audit_table('address');
 SELECT audit.audit_table('customer');
 -- the update grants we already gave in previous lecture, now give also insert grants
-GRANT INSERT, DELETE ON address TO ObjectOwner;
+GRANT INSERT, DELETE ON address TO objectowner;
 -- even for the auto-incremented sequence we need to give rights
-GRANT USAGE ON address_address_id_seq TO ObjectOwner;
+GRANT USAGE ON address_address_id_seq TO objectowner;
 -- and now as other user we try to change some data in the tables
-set role ObjectOwner;
+set role objectowner;
 SET search_path TO dvd, public;
 -- on select nothing happens in trigger tables, but we want to see some data, which we might want to change
 select * from address limit 5;
