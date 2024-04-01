@@ -1,6 +1,6 @@
 -- creation and insert script to demonstrate analytic/window functions
 \c dvdrental
-set role ApplicationUser;
+set role objectowner;
 SET search_path TO dvd, public;
 --
 CREATE TABLE IF NOT EXISTS product_groups (

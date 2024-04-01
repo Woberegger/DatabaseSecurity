@@ -1,14 +1,15 @@
 -- check, if we are really the administrative user "postgres"
 SELECT current_user, session_user;
 SELECT current_schema();
-CREATE ROLE ApplicationUser WITH CREATEDB;
-CREATE USER ObjectOwner PASSWORD 'my-secret-pw' IN ROLE ApplicationUser; 
-CREATE USER ReadOnly WITH Login CONNECTION LIMIT 1 PASSWORD 'read-only-pw';
+-- we shall user lower case user names, in DB they are stored in lower case and depending on the used tool only lower-case login is allowed
+CREATE ROLE applicationuser WITH CREATEDB;
+CREATE USER objectowner PASSWORD 'my-secret-pw' IN ROLE applicationuser; 
+CREATE USER readonly WITH Login CONNECTION LIMIT 1 PASSWORD 'read-only-pw';
 -- we need to create a schema, where the new users are allowed to create their objects
 CREATE SCHEMA IF NOT EXISTS dvd;
-GRANT USAGE, CREATE ON SCHEMA dvd TO ApplicationUser,Scott;
+GRANT USAGE, CREATE ON SCHEMA dvd TO applicationuser,Scott;
 -- no object creation allowed, but it needs to e.g. select from that schema
-GRANT USAGE ON SCHEMA dvd to ReadOnly;
+GRANT USAGE ON SCHEMA dvd to readonly;
 --
 SET Role Scott;
 -- now see difference in output between current_user and session_user (here the one, which owns the objects)
@@ -39,14 +40,14 @@ SELECT cu.customer_id AS id,
      JOIN country ON ((city.country_id = country.country_id)));
 --
 \d customer_list
-GRANT SELECT ON customer_list TO ReadOnly;
-GRANT SELECT ON customer, address, city, country, customer_list TO ObjectOwner;
+GRANT SELECT ON customer_list TO readonly;
+GRANT SELECT ON customer, address, city, country, customer_list TO objectowner;
 -- allow to change certain columns in 2 tables, try it either using the table or the view
-GRANT UPDATE (address, postal_code, city_id) ON address TO ObjectOwner;
-GRANT UPDATE (country) ON country TO ObjectOwner;
+GRANT UPDATE (address, postal_code, city_id) ON address TO objectowner;
+GRANT UPDATE (country) ON country TO objectowner;
 
 -- now try with the read-only user
-SET Role ReadOnly;
+SET Role readonly;
 SET search_path TO dvd, public;
 -- the describe command works, as before we have already switched to that database
 \d customer_list;
@@ -55,8 +56,8 @@ SELECT * FROM Customer_List LIMIT 5;
 SELECT * FROM dvd.Address LIMIT 3;
 -- # ERROR:  permission denied for table address
 
--- now we try the user "ObjectOwner" ...
-SET Role ObjectOwner;
+-- now we try the user "objectowner" ...
+SET Role objectowner;
 -- try to first find objects in dvd schema
 SET search_path TO dvd, public;
 -- the describe command works, as before we have already switched to that database
