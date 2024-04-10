@@ -10,4 +10,6 @@ cp /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.co
 sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/modsecurity/modsecurity.conf
 # finally restart again to be on save side, that all is considered
 systemctl restart apache2
-
+# if later you want to disable that again, you can call
+#a2dismod security2
+#systemctl restart apache2
