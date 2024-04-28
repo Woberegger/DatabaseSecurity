@@ -25,3 +25,6 @@ exit # exit su command
 exit # exit docker container
 # enter docker container with psql command and the newly created user (-u ... OS-user, -U ... DB-User)
 docker exec -it -u objectowner Postgres psql -d dvdrental -U objectowner
+# optionally try in 2 steps to first log into OS and then into database
+docker exec -it -u objectowner Postgres /bin/bash
+psql -U objectowner -d dvdrental
