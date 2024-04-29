@@ -8,8 +8,8 @@ docker run --name openldap \
   -p 389:389 \
   -e LDAP_ADMIN_USERNAME=admin \
   -e LDAP_ADMIN_PASSWORD=adminpassword \
-  -e LDAP_USERS=scott,customuser,objectowner,readonly \
-  -e LDAP_PASSWORDS=scotty,custompassword,objectownerpwd123,readonlypwd123 \
+  -e LDAP_USERS=scott,customuser,otheruser,objectowner,readonly \
+  -e LDAP_PASSWORDS=scotty,custompassword,otherpassword,objectownerpwd123,readonlypwd123 \
   -e LDAP_ROOT=dc=example,dc=org \
   -e LDAP_ADMIN_DN=cn=admin,dc=example,dc=org \
   -d bitnami/openldap:latest
