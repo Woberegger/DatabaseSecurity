@@ -40,6 +40,8 @@ docker cp Postgres:/var/lib/postgresql/data/pg_hba.conf /tmp/
 docker cp DatabaseSecurity/scripts/05/pg_hba.conf Postgres:/var/lib/postgresql/data/pg_hba.conf
 # start container or when already running, then call the following inside of the docker container
 service postgresql restart
+# in case of error when restarting the container you can call
+docker logs Postgres
 
 # test 1 - check, that "postgres" DB admin can still login without a password as "trusted"
 docker exec -it -u postgres Postgres psql -d dvdrental
