@@ -1,0 +1,1 @@
+id=6 union all select customer_id, to_char(staff_id,'FM999999999'), to_char(payment_date,'YYYYMMDD'), to_char(amount,'FM99999999') from dvd.payment
