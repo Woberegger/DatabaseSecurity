@@ -4,12 +4,11 @@ docker exec -it Postgres /bin/bash
 # The OS and DB user do not need to have to be named identically, it's just to show the mapping
 useradd -m -d /home/objectowner -s /bin/bash -g postgres objectowner
 passwd objectowner
+exit
 # first replace security settings, that only postgres user does not need to provide a password, i.e. trusted authentication removed from others
-cd /var/lib/postgresql/data
-sed -i 's/host    all             all/host    all             postgres/' pg_hba.conf
-sed -i 's/local   all             all/local   all             postgres/' pg_hba.conf
-# and User "objectowner" has to use md5-checksum passwords
-echo "local dvdrental objectowner md5" >>pg_hba.conf
+docker cp scripts/05/pg_hba.conf.pgpass Postgres:/var/lib/postgresql/data/pg_hba.conf
+# and User "objectowner" has to use md5-checksum passwords, so following line is expected in the file
+#local dvdrental objectowner md5
 
 # and restart the database (or to be on the save side stop and start docker container)
 service postgresql restart
