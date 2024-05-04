@@ -31,6 +31,7 @@ ldapsearch -x -H ldap://172.20.19.4:1389 -b 'dc=example,dc=org'
 
 # check, if explicitely the data for this user can be retrieved
 ldapsearch -H ldap://172.20.19.4:1389 -W -D "cn=readonly,ou=users,dc=example,dc=org" -b "dc=example,dc=org" "uid=readonly"
+exit # leave docker container
 
 # adapt postgres configuration to accept LDAP authentication
 # to be on the save side first copy the config file locally, so in case of a wrong record a broken container can be fixed!!!
