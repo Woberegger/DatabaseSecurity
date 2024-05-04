@@ -3,7 +3,7 @@ docker exec -it Postgres /bin/bash
 # create a new OS user, which shall be allowed to login passwordless with .pgpass file
 # The OS and DB user do not need to have to be named identically, it's just to show the mapping
 useradd -m -d /home/objectowner -s /bin/bash -g postgres objectowner
-passwd useradd -m -d /home/objectowner -s /bin/bash -g postgres objectowner
+passwd objectowner
 # first replace security settings, that only postgres user does not need to provide a password, i.e. trusted authentication removed from others
 cd /var/lib/postgresql/data
 sed -i 's/host    all             all/host    all             postgres/' pg_hba.conf
