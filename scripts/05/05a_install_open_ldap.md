@@ -21,7 +21,7 @@ docker start openldap
 docker exec -it -u root Postgres /bin/bash
 apt-get update
 apt-get install ldap-utils
-ldapsearch -x -H ldap://172.20.19.4:1389 -b 'dc=example,dc=org'
+ldapsearch -x -H ldap://openldap:1389 -b 'dc=example,dc=org'
 # expected output e.g. is list of users, which we provided before
 #...
 #objectClass: groupOfNames
@@ -30,7 +30,7 @@ ldapsearch -x -H ldap://172.20.19.4:1389 -b 'dc=example,dc=org'
 #...
 
 # check, if explicitely the data for this user can be retrieved
-ldapsearch -H ldap://172.20.19.4:1389 -W -D "cn=readonly,ou=users,dc=example,dc=org" -b "dc=example,dc=org" "uid=readonly"
+ldapsearch -H ldap://openldap:1389 -W -D "cn=readonly,ou=users,dc=example,dc=org" -b "dc=example,dc=org" "uid=readonly"
 exit # leave docker container
 
 # adapt postgres configuration to accept LDAP authentication
