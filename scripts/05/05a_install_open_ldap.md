@@ -5,7 +5,6 @@ export NETWORK=my-docker-network
 docker run --name openldap \
   --network $NETWORK \
   -p 1389:1389 \
-  -p 389:389 \
   -e LDAP_ADMIN_USERNAME=admin \
   -e LDAP_ADMIN_PASSWORD=adminpassword \
   -e LDAP_USERS=scott,customuser,otheruser,objectowner,readonly \
