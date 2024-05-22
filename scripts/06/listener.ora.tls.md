@@ -1,0 +1,28 @@
+# $ORACLE_HONE/network/admin/listener.ora for TLS
+SSL_CLIENT_AUTHENTICATION = FALSE
+
+WALLET_LOCATION =
+  (SOURCE =
+    (METHOD = FILE)
+    (METHOD_DATA =
+      (DIRECTORY = /opt/oracle/product/23c/dbhomeFree/wallet)
+    )
+  )
+  
+SID_LIST_LISTENER =
+  (SID_LIST =
+    (SID_DESC =
+      (SID_NAME = PLSExtProc)
+      (ORACLE_HOME = /opt/oracle/product/23c/dbhomeFree)
+      (PROGRAM = extproc)
+    )
+  )
+
+LISTENER =
+  (DESCRIPTION_LIST =
+    (DESCRIPTION =
+      (ADDRESS = (PROTOCOL = IPC)(KEY = EXTPROC_FOR_FREE))
+      (ADDRESS = (PROTOCOL = TCP)(HOST = 0.0.0.0)(PORT = 1521))
+      (ADDRESS = (PROTOCOL = TCPS)(HOST = 0.0.0.0)(PORT = 2484))
+    )
+  )

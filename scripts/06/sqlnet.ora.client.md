@@ -1,0 +1,21 @@
+# this is a sample $ORACLE_HOME/network/admin/sqlnet.ora file, configured for Oracle NNE
+NAMES.DIRECTORY_PATH= (TNSNAMES, EZCONNECT, HOSTNAME)
+DISABLE_OOB=ON
+# disable weak crypto methods
+SQLNET.ALLOW_WEAK_CRYPTO=FALSE
+# allow TLS together with NNE
+SQLNET.IGNORE_ANO_ENCRYPTION_FOR_TCPS=TRUE
+# allowed TLS ciphers, starting with strongest ones
+SSL_CIPHER_SUITES=(TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_GCM_SHA256)
+# the client does not need to authenticate himself
+SSL_CLIENT_AUTHENTICATION = FALSE
+SSL_SERVER_DN_MATCH=ON
+SQLNET.AUTHENTICATION_SERVICES = (TCPS)
+# the only difference to the server side file is the directory, where the wallet is stored
+WALLET_LOCATION =
+  (SOURCE =
+    (METHOD = FILE)
+    (METHOD_DATA =
+      (DIRECTORY = /home/oraclient/wallet)
+    )
+  )
