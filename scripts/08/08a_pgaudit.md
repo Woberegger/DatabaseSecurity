@@ -50,5 +50,6 @@ docker exec -i --tty=false -u postgres Postgres psql -d dvdrental -U objectowner
    SELECT * FROM dvd.dummy;
 !
 # the docker logging (as we have directed to stderr) should show the recent actions
+# depending on settings it might also be logged to /var/lib/postgresql/data/log/ directory
 docker logs Postgres | tail -n 100
 
