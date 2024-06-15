@@ -44,7 +44,10 @@ docker exec -i --tty=false -u postgres Postgres psql -d dvdrental -U objectowner
    -- and now we create some dummy table to check the audit logs
    drop table if exists dvd.dummy;
    create table dvd.dummy (dummyint int, dummystring varchar(20));
+   -- as we do not audit dml, the insert will not be audit-logged
    insert into dvd.dummy values (1,'hello');
+   -- however the following select should be logged
+   SELECT * FROM dvd.dummy;
 !
 # the docker logging (as we have directed to stderr) should show the recent actions
 docker logs Postgres | tail -n 100
