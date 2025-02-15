@@ -7,7 +7,7 @@ docker pull container-registry.oracle.com/database/free:latest
 export DOCKER_CONTAINERNAME=Oracle23Free
 # damit der listener-Port 1521 von extern zugreifbar ist, muss dieser über "p xxx:xxx" freigegeben werden
 docker run -d --name $DOCKER_CONTAINERNAME -p 1521:1521 container-registry.oracle.com/database/free:latest
-docker exec $DOCKER_CONTAINERNAME ./setPassword.sh FhIms2024
+docker exec $DOCKER_CONTAINERNAME ./setPassword.sh FhIms9999
 
 # verbinde mit der Datenbank mit sqlplus innerhalb des Containers und zeige an, welche pdbs und welche user es gibt
 # über --tty=false kann man eine Kommandosequenz als Here-Document übergeben
@@ -33,7 +33,10 @@ docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
 !
 # wir müssen einen tns-Alias für die neue DB anlegen, damit wir mit user/pwd@PluggableDB uns anmelden können
 docker exec -it $DOCKER_CONTAINERNAME /bin/bash
-cat >>/opt/oracle/product/23c/dbhomeFree/network/admin/tnsnames.ora <<!
+# vorher prüfen, ob der Pfad und Datei existiert, bei älteren Versionen ist das z.B. 23c statt 23ai
+cat /opt/oracle/product/23ai/dbhomeFree/network/admin/tnsnames.ora
+
+cat >>/opt/oracle/product/23ai/dbhomeFree/network/admin/tnsnames.ora <<!
 IMS =
   (DESCRIPTION =
     (ADDRESS = (PROTOCOL = TCP)(HOST = 0.0.0.0)(PORT = 1521))
@@ -42,7 +45,8 @@ IMS =
       (SERVICE_NAME = IMS)
     )
   )
-! 
+!
+exit # exit from docker container
   
 # damit wir später saubere Trennung haben, legen wir eigenen Tablespace für Daten und Indizes an
 docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
@@ -50,7 +54,7 @@ docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
    ALTER session SET container=IMS;
    CREATE TABLESPACE data DATAFILE '/opt/oracle/oradata/FREE/IMS/data.dbf' SIZE 16m AUTOEXTEND ON;
    CREATE TABLESPACE indexes DATAFILE '/opt/oracle/oradata/FREE/IMS/indexes.dbf' SIZE 8m AUTOEXTEND ON;
-   SELECT FILE_NAME, auto_extent FROM dba_data_files;
+   SELECT FILE_NAME FROM dba_data_files;
    SELECT tablespace_name, INITIAL_EXTENT, NEXT_EXTENT, ENCRYPTED, EXTENT_MANAGEMENT FROM DBA_TableSpaces;
 !
 
@@ -59,13 +63,13 @@ docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
    ALTER session SET container=IMS;
    -- zuvor legen wir noch eine Rolle an, damit wir die dann dem User geben, bei einem weiteren User können wir dieselbe Rolle weiterverwenden
    CREATE Role Application;
-   CREATE USER Ims IDENTIFIED BY FhIms2024 DEFAULT TABLESPACE DATA TEMPORARY TABLESPACE TEMP;
+   CREATE USER Ims IDENTIFIED BY FhIms9999 DEFAULT TABLESPACE DATA TEMPORARY TABLESPACE TEMP;
    GRANT CONNECT, RESOURCE, CREATE TABLE, CREATE PROCEDURE, CREATE VIEW, CREATE DATABASE LINK, CREATE SYNONYM, CREATE ANY DIRECTORY TO Application;
    GRANT CONNECT, RESOURCE, UNLIMITED TABLESPACE, Application TO Ims;
 !
 
 # und dann verbinden wir uns testweise mit dem neu angelegten User, der sollte zumindest ein paar Systemtabellen finden, eigene gibt es noch keine
-docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s ims/FhIms2024@IMS <<!
+docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s ims/FhIms9999@IMS <<!
    SELECT Table_Name FROM All_Tables WHERE RowNum<=10;
    prompt hier wird erwarteterweise noch nichts gefunden
    SELECT * FROM cat;
@@ -88,7 +92,7 @@ docker exec -it Oracle23Free sqlplus / as sysdba
 # cd instantclient
 # wget https://download.oracle.com/otn_software/linux/instantclient/23c/instantclient-basic-linux.x64-23.3.0.0.0.zip
 # wget https://download.oracle.com/otn_software/linux/instantclient/23c/instantclient-sqlplus-linux.x64-23.3.0.0.0.zip
-# unzip instantclient-sqlplus-linux.x64-23.3.0.0.0.zip
+# unzip instantclient-basic-linux.x64-23.3.0.0.0.zip unzip instantclient-sqlplus-linux.x64-23.3.0.0.0.zip
 # export PATH=$PATH:/usr/local/instantclient/instantclient_23_3
 # export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/instantclient/instantclient_23_3
 

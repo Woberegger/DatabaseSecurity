@@ -10,7 +10,7 @@ docker run --name $DOCKER_CONTAINERNAME --network ${NETWORK} -p 5432:5432 -e POS
 # interaktiver login über psql SQL-Commandline in den laufenden Container
 # über --tty=false kann man eine Kommandosequenz als Here-Document übergeben
 docker exec -i --tty=false -u postgres ${DOCKER_CONTAINERNAME} psql <<!
-   CREATE ROLE scott LOGIN PASSWORD 'FhIms2024';
+   CREATE ROLE scott LOGIN PASSWORD 'FhIms9999';
    CREATE DATABASE ims 
    WITH 
       ENCODING = 'UTF8'
