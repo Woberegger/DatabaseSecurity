@@ -12,3 +12,6 @@ docker exec -it -u root cloudbeaver /bin/bash
 cd /root
 echo "*:5432:dvdrental:objectowner:my-secret-pw" >.pgpass
 chmod 600 .pgpass
+# when connecting to dbeaver under http://<VM-Host>:8978 you should use following credentials:
+# User: cbadmin
+# Password: My-secret-pw123
