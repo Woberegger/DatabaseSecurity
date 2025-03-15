@@ -5,8 +5,10 @@
 # Das Image ist ca. 14 GB gross, d.h. bitte auf ausreichend Speicher prüfen
 docker pull container-registry.oracle.com/database/free:latest
 export DOCKER_CONTAINERNAME=Oracle23Free
+export NETWORK=my-docker-network
 # damit der listener-Port 1521 von extern zugreifbar ist, muss dieser über "p xxx:xxx" freigegeben werden
-docker run -d --name $DOCKER_CONTAINERNAME -p 1521:1521 container-registry.oracle.com/database/free:latest
+docker run -d --name $DOCKER_CONTAINERNAME --network ${NETWORK} -p 1521:1521 --log-opt max-size=100m container-registry.oracle.com/database/free:latest
+sleep 5 # give DB some time to startup
 docker exec $DOCKER_CONTAINERNAME ./setPassword.sh FhIms9999
 
 # verbinde mit der Datenbank mit sqlplus innerhalb des Containers und zeige an, welche pdbs und welche user es gibt
@@ -20,6 +22,22 @@ docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
 # zeige letzte Ausgaben des Oracle Alert-Logs
 docker logs $DOCKER_CONTAINERNAME
 
+# da hier die Logfiles sehr gross werden können (und sogar allen Speicher auffressen), empfiehlt sich logrotate
+LogPath=$(dirname $(docker inspect --format='{{.LogPath}}' Oracle23Free))
+
+cat >/etc/logrotate.d/docker-oracle-logs <<!
+${LogPath}/*.log {
+    daily
+    rotate 3
+    compress
+    missingok
+    notifempty
+    copytruncate
+}
+!
+# Teste Aufruf:
+logrotate -f /etc/logrotate.d/docker-oracle-logs
+
 # jetzt legen wir eine eigene Pluggable DB an als Kopie der Default-DB "FREEPDB1"
 docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
    SET lines 300 pages 0;
@@ -28,6 +46,8 @@ docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
    CREATE Pluggable Database IMS FROM FREEPDB1 FILE_NAME_CONVERT=('/opt/oracle/oradata/FREE/FREEPDB1/','/opt/oracle/oradata/FREE/IMS/');
    -- Wechsle in den existierenden Container
    ALTER Pluggable Database IMS OPEN;
+   -- take care, that container automatically starts up the next time
+   ALTER Pluggable Database IMS save state;
    ALTER session SET container=IMS;
    SELECT FILE_NAME FROM dba_data_files;
 !
