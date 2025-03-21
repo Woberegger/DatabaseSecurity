@@ -1,7 +1,7 @@
 # install package for pgaudit into the Postgres container
 docker exec -i --tty=false -u root Postgres /bin/bash <<!
    apt update -y
-   apt install -y postgresql-16-pgaudit
+   apt install -y postgresql-17-pgaudit
 !
 
 # as OS-user postgres modify some settings to enable pgaudit in config file
@@ -52,4 +52,6 @@ docker exec -i --tty=false -u postgres Postgres psql -d dvdrental -U objectowner
 # the docker logging (as we have directed to stderr) should show the recent actions
 # depending on settings it might also be logged to /var/lib/postgresql/data/log/ directory
 docker logs Postgres | tail -n 100
-
+docker exec -i --tty=false -u postgres Postgres /bin/bash <<!
+   tail -n 100 /var/lib/postgresql/data/log/postgresql*.log
+!
