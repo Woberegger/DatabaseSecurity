@@ -53,5 +53,5 @@ docker exec -i --tty=false -u postgres Postgres psql -d dvdrental -U objectowner
 # depending on settings it might also be logged to /var/lib/postgresql/data/log/ directory
 docker logs Postgres | tail -n 100
 docker exec -i --tty=false -u postgres Postgres /bin/bash <<!
-   tail -n 100 /var/lib/postgresql/data/log/postgresql*.log
+   grep -i dummy /var/lib/postgresql/data/log/postgresql*.log
 !

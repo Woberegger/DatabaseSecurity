@@ -3,7 +3,7 @@
 $id = $_GET['id'];
 
 // connect and select DB
-$dbconn = pg_connect('host=localhost port=5432 dbname=dvdrental user=postgres password=my-secret-pw connect_timeout=5')
+$dbconn = pg_connect('host=Postgres port=5432 dbname=dvdrental user=postgres password=my-secret-pw connect_timeout=5')
   or die('Could not connect: ');
 
 // perform SQL query
