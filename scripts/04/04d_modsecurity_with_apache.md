@@ -11,6 +11,6 @@ sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/modsecurity/modsec
 # finally restart again to be on save side, that all is considered
 systemctl restart apache2
 # after having tested SQL injection by calling http://<IP-Addr>/test_sql_inj.php?id=6%20OR%201=1
-cat /var/log/apache/modsec_audit.log
+cat /var/log/apache2/modsec_audit.log
 # if later you want to disable that again, you can call
 #a2dismod security2; systemctl restart apache2
