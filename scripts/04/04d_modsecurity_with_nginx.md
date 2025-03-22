@@ -1,7 +1,7 @@
 # install necessary ModSecurity module for existing nginx installation
 # see e.g. https://www.linode.com/docs/guides/securing-nginx-with-modsecurity/
 echo "load_module modules/ngx_http_modsecurity_module.so;" >>/etc/nginx/nginx.conf
-cp /etc/nginx/modsec/modsecurity.conf-recommended /etc/nginx/modsec/modsecurity.con
+cp /etc/nginx/modsec/modsecurity.conf-recommended /etc/nginx/modsec/modsecurity.conf
 sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/nginx/modsec/modsecurity.conf
 cat >> /etc/nginx/modsec/main.conf <!
 # Include the recommended configuration

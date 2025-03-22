@@ -3,6 +3,7 @@
 $id = $_GET['id'];
 
 // connect and select DB (we assume, that port 5432 is exposed from docker to host)
+// optionally try different user "objectowner" and compare the results, what was exploited
 $dbconn = pg_connect('host=localhost port=5432 dbname=dvdrental user=postgres password=my-secret-pw connect_timeout=5')
   or die('Could not connect: ');
 
