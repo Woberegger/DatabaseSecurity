@@ -5,6 +5,8 @@ docker exec -it Postgres /bin/bash
 useradd -m -d /home/objectowner -s /bin/bash -g postgres objectowner
 passwd objectowner
 exit
+# to be on the save side first copy the config file locally, so in case of a wrong record a broken container can be fixed!!!
+docker cp Postgres:/var/lib/postgresql/data/pg_hba.conf /tmp/
 # first replace security settings, that only postgres user does not need to provide a password, i.e. trusted authentication removed from others
 docker cp scripts/05/pg_hba.conf.pgpass Postgres:/var/lib/postgresql/data/pg_hba.conf
 # and User "objectowner" has to use md5-checksum passwords, so following line is expected in the file
