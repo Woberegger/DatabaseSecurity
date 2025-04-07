@@ -11,6 +11,13 @@ docker run -p 5050:80 --name pgadmin4 --network ${NETWORK} \
 
 # Nach dem Hochstarten mit folgendem Befehl abfragen, welche IPs vergeben wurden
 docker network inspect my-docker-network
+# damit man in pgadmin the psql shell commandos verwenden kann (was in Produktivsystem ein Security-Risiko in der Webversion wäre)
+# ist folgendes zu machen:
+docker cp pgadmin4:/pgadmin4/config.py .
+sed -i 's/ENABLE_PSQL = False/ENABLE_PSQL = True/' config.py
+docker cp config.py pgadmin4:/pgadmin4/
+docker stop pgadmin4
+docker start pgadmin4
 
 # in pgAdmin auf der Webseite http://localhost:5050 für die Serververbindung diejenige IP angeben, die hier für den Container "Postgres" angezeigt wird,
 # also z.B. 172.20.160.2
