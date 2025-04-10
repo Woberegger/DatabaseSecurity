@@ -37,15 +37,17 @@ exit # leave docker container
 # to be on the save side first copy the config file locally, so in case of a wrong record a broken container can be fixed!!!
 docker cp Postgres:/var/lib/postgresql/data/pg_hba.conf /tmp/
 # then copy the prepared file pg_hba.conf from bitbucket to the server
-docker cp DatabaseSecurity/scripts/05/pg_hba.conf Postgres:/var/lib/postgresql/data/pg_hba.conf
-# start container or when already running, then call the following inside of the docker container
-service postgresql restart
+docker cp DatabaseSecurity/scripts/05/pg_hba.conf.ldap Postgres:/var/lib/postgresql/data/pg_hba.conf
+# start container or when already running, then better restart it, as this somehow does not seem to work: service postgresql restart
+docker stop Postgres
+docker start Postgres
 # in case of error when restarting the container you can call
 docker logs Postgres
 
 # test 1 - check, that "postgres" DB admin can still login without a password as "trusted"
 docker exec -it -u postgres Postgres psql -d dvdrental
 # test 2 - connect as "readonly" user using following commands (the -W parameter forces asking for password - here "readonlypwd123")
+#          (the password to provide is not the database user's password, but the one as configured in ldap - see line 11 of script)
 docker exec -it -u postgres Postgres psql -d dvdrental -U readonly -W
 # if you should get an error as the following, then at least you know, that Ldap authentication was tried, but not successful - check the parameters!
 # psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: FATAL:  LDAP authentication failed for user "readonly"
