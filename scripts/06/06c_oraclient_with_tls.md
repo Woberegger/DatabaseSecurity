@@ -2,8 +2,8 @@
 # adapt client to work with wallet
 docker exec -it -u oraclient Oracle23Free /bin/bash
 cd ~/tnsadmin
-cp /opt/oracle/product/23c/dbhomeFree/network/admin/sqlnet.ora .
-cp /opt/oracle/product/23c/dbhomeFree/network/admin/tnsnames.ora .
+cp /opt/oracle/product/23ai/dbhomeFree/network/admin/sqlnet.ora .
+cp /opt/oracle/product/23ai/dbhomeFree/network/admin/tnsnames.ora .
 # then adapt the wallet information in ~/tnsadmin/sqlnet.ora to where the client wallet is located
 # i.e. (DIRECTORY = /home/oraclient/wallet)
 

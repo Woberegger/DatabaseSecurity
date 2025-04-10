@@ -7,7 +7,7 @@ docker pull container-registry.oracle.com/database/free:latest
 export DOCKER_CONTAINERNAME=Oracle23Free
 export NETWORK=my-docker-network
 # damit der listener-Port 1521 von extern zugreifbar ist, muss dieser über "p xxx:xxx" freigegeben werden
-docker run -d --name $DOCKER_CONTAINERNAME --network ${NETWORK} -p 1521:1521 --log-opt max-size=100m container-registry.oracle.com/database/free:latest
+docker run -d --name $DOCKER_CONTAINERNAME --network ${NETWORK} -p 1521:1521 -p 2484:2484 --log-opt max-size=100m container-registry.oracle.com/database/free:latest
 sleep 5 # give DB some time to startup (when "ORA-01109: database not open" pops up, then try again
 docker exec $DOCKER_CONTAINERNAME ./setPassword.sh FhIms9999
 

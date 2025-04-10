@@ -5,7 +5,7 @@ WALLET_LOCATION =
   (SOURCE =
     (METHOD = FILE)
     (METHOD_DATA =
-      (DIRECTORY = /opt/oracle/product/23c/dbhomeFree/wallet)
+      (DIRECTORY = /opt/oracle/product/23ai/dbhomeFree/wallet)
     )
   )
   
@@ -13,7 +13,7 @@ SID_LIST_LISTENER =
   (SID_LIST =
     (SID_DESC =
       (SID_NAME = PLSExtProc)
-      (ORACLE_HOME = /opt/oracle/product/23c/dbhomeFree)
+      (ORACLE_HOME = /opt/oracle/product/23ai/dbhomeFree)
       (PROGRAM = extproc)
     )
   )

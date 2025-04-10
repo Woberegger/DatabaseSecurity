@@ -46,8 +46,14 @@ orapki wallet add -wallet $WALLET_DIR -pwd $WALLETPWD -trusted_cert -cert /tmp/$
 # check content of server wallet again, it now includes the client certificate as well
 orapki wallet display -wallet $WALLET_DIR -pwd $WALLETPWD
 
-# then update files sqlnet.ora, listener.ora and tnsnames.ora according to the templates
-# after that restart listener
+### IMPORTANT: then update files in /opt/oracle/oradata/dbconfig/FREE directory: sqlnet.ora, listener.ora and tnsnames.ora according to the templates named *.tls"
+# the following line in tnsnames.ora has to be changed before to what "orapki wallet display $WALLET_DIR -pwd $WALLETPWD" tells us,
+# whereas the other 2 files can be copied without changes
+#    (SECURITY=(SSL_SERVER_CERT_DN="CN=db365169eb3fe6.localdomain"))
+    
+# e.g.: docker cp listener.ora.tls.md Oracle23Free:/opt/oracle/oradata/dbconfig/FREE/listener.ora
+
+# after that restart listener (a potential error will be shown immediately)
 lsnrctl stop
 lsnrctl start
 # do test connect on port 2484 (first as user "oracle")
@@ -56,8 +62,8 @@ tnsping ims_ssl
 # and then adapt client
 su - oraclient
 cd ~/tnsadmin
-cp /opt/oracle/product/23c/dbhomeFree/network/admin/sqlnet.ora .
-cp /opt/oracle/product/23c/dbhomeFree/network/admin/tnsnames.ora .
+cp /opt/oracle/product/23ai/dbhomeFree/network/admin/sqlnet.ora .
+cp /opt/oracle/product/23ai/dbhomeFree/network/admin/tnsnames.ora .
 # then adapt the wallet information in sqlnet.ora to where the client wallet is located
 # i.e. (DIRECTORY = /home/oraclient/wallet)
 
@@ -71,6 +77,6 @@ tnsping ims_ssl
 ### Attempting to contact (DESCRIPTION = (SECURITY=(SSL_SERVER_CERT_DN=CN=db35249253d541.localdomain)) (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCPS)(HOST = localhost)(PORT = 2484))) (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = IMS)))
 ### OK (10 msec)
 
-sqlplus ims/FhIms2024@IMS_SSL <<!
+sqlplus ims/FhIms9999@IMS_SSL <<!
    select sysdate from dual;
 !
