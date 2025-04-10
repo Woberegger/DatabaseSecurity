@@ -12,9 +12,10 @@ docker cp scripts/05/pg_hba.conf.pgpass Postgres:/var/lib/postgresql/data/pg_hba
 # and User "objectowner" has to use md5-checksum passwords, so following line is expected in the file
 #local dvdrental objectowner md5
 
-# and restart the database (or to be on the save side stop and start docker container)
-docker exec -it Postgres /bin/bash
-service postgresql restart
+# and restart the database (or to be on the save side stop and start docker container), as somehow "service postgresql restart" does not seem to work
+docker stop Postgres
+docker start Postgres
+
 # then change to the newly created user
 su - objectowner
 echo "export PGPASSFILE=\$HOME/.pgpass" >>.bashrc
@@ -30,3 +31,5 @@ docker exec -it -u objectowner Postgres psql -d dvdrental -U objectowner
 # optionally try in 2 steps to first log into OS and then into database
 docker exec -it -u objectowner Postgres /bin/bash
 psql -U objectowner -d dvdrental
+# and in contrary the following command will ask for password of user "readonly", which is "read-only-pw"
+docker exec -it -u objectowner Postgres psql -d dvdrental -U readonly
