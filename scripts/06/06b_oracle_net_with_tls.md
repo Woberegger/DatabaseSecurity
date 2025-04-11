@@ -77,6 +77,9 @@ tnsping ims_ssl
 ### Attempting to contact (DESCRIPTION = (SECURITY=(SSL_SERVER_CERT_DN=CN=db35249253d541.localdomain)) (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCPS)(HOST = localhost)(PORT = 2484))) (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = IMS)))
 ### OK (10 msec)
 
+# the following login requires a password, but the select statement should not be shown in plain text anymore
+# (check with "tcpdump -i any -XX -s 1024 port 2484" - if docker originally was exposing port 2484 to outer world, then this would work from OpenStack VM,
+#  otherwise this can only be done inside of the docker container itself)
 sqlplus ims/FhIms9999@IMS_SSL <<!
    select sysdate from dual;
 !

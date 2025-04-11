@@ -16,7 +16,8 @@ docker cp scripts/05/pg_hba.conf.pgpass Postgres:/var/lib/postgresql/data/pg_hba
 docker stop Postgres
 docker start Postgres
 
-# then change to the newly created user
+# then change to the newly created user (in docker container)
+docker exec -it -u root Postgres /bin/bash
 su - objectowner
 echo "export PGPASSFILE=\$HOME/.pgpass" >>.bashrc
 echo "localhost:5432:dvdrental:objectowner:my-secret-pw" >$HOME/.pgpass
@@ -33,3 +34,5 @@ docker exec -it -u objectowner -w /home/objectowner Postgres /bin/bash
 psql -U objectowner -d dvdrental
 # and in contrary the following command will ask for password of user "readonly", which is "read-only-pw"
 docker exec -it -u objectowner Postgres psql -d dvdrental -U readonly
+# additional test: connect to Postgres container of different user in group
+docker exec -it -u objectowner Postgres psql -d dvdrental -h <IP-Address> -U objectowner
