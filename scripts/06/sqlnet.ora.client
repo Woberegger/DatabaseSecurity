@@ -1,12 +1,12 @@
 # this is a sample $ORACLE_HOME/network/admin/sqlnet.ora file, configured for Oracle NNE
 NAMES.DIRECTORY_PATH= (TNSNAMES, EZCONNECT, HOSTNAME)
 DISABLE_OOB=ON
-# IMPORTANT: this is necessary to set, when passwordless login shall be used
-SQLNET.WALLET_OVERRIDE=TRUE
 # disable weak crypto methods
 SQLNET.ALLOW_WEAK_CRYPTO=FALSE
 # allow TLS together with NNE
 SQLNET.IGNORE_ANO_ENCRYPTION_FOR_TCPS=TRUE
+# IMPORTANT: this is necessary to set, when passwordless login shall be used
+SQLNET.WALLET_OVERRIDE=TRUE
 # allowed TLS ciphers, starting with strongest ones
 SSL_CIPHER_SUITES=(TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_GCM_SHA256)
 # the client does not need to authenticate himself
