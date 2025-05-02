@@ -66,6 +66,8 @@ cp /opt/oracle/product/23ai/dbhomeFree/network/admin/sqlnet.ora .
 cp /opt/oracle/product/23ai/dbhomeFree/network/admin/tnsnames.ora .
 # then adapt the wallet information in sqlnet.ora to where the client wallet is located
 # i.e. (DIRECTORY = /home/oraclient/wallet)
+# and also set the following option
+#SQLNET.WALLET_OVERRIDE=TRUE
 
 # expected output is as shown below...
 tnsping ims_ssl

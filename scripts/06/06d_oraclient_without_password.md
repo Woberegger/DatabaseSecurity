@@ -8,6 +8,7 @@ WALLETPWD=WalletPasswd123
 mkstore -wrl $HOME/wallet -createCredential IMS ims FhIms9999
 orapki wallet display -wallet $WALLET_DIR -pwd $WALLETPWD
 
+# IMPORTANT: this only works, when SQLNET.WALLET_OVERRIDE=TRUE is set in $HOME/tnsadmin/sqlnet.ora
 sqlplus /@IMS <<!
    select sysdate from dual;
 !
