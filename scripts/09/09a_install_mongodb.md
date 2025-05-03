@@ -8,7 +8,7 @@ export MONGODB_VERSION=latest
 ### the following would be the interactive docker run command, but we better use docker-compose ###
 #docker run --name mongodb --network ${NETWORK} -d -p 27017:27017 -v /root/mongodb/data:/mongodb/data \
 #   -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=my-secret-pw mongodb/mongodb-community-server:$MONGODB_VERSION
-docker compose -f 09b_mongodb-docker-compose.yaml up -d
+docker-compose -f 09b_mongodb-docker-compose.yaml up -d
 
 # as GUI we will use IntelliJ, however if you want to install compass GUI, you can download it from following URL
 # https://downloads.mongodb.com/compass/mongodb-compass-1.46.1-win32-x64.exe
@@ -16,4 +16,9 @@ docker compose -f 09b_mongodb-docker-compose.yaml up -d
 # connect to MongoDB from different docker, e.g. MongoDB Atlas
 # docker run -d --name MYAPP -e MONGODB_CONNSTRING=mongodb+srv://admin:my-secret-pw@clusterURL MYAPP:1.0
 
+# evaluate in one, if docker container is working and connection is possible
+docker exec -it -u root mongodb mongosh mongodb://admin:my-secret-pw@mongodb:27017 --eval "show dbs;"
 
+# the simply mongoapp will only display the installed databases and then stop
+docker start mongoapp
+docker logs mongoapp

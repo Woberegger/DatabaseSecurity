@@ -2,6 +2,11 @@
 # you should use '//' for comments (this also works within one command struct)
 # the ';' is used to terminate statements within one line, at the end of the line it is optional.
 
+# connect to the mongoDB docker container
+# Variant a) directly use mongosh with docker exec command
+docker exec -it -u root mongodb mongosh mongodb://admin:my-secret-pw@mongodb:27017
+
+# Variant b) first with bash and then mongosh
 docker exec -it -u root mongodb /bin/bash
 # and inside the docker container try mongosh CLI for mongodb to show, which databases there exist
 mongosh --username admin --password my-secret-pw --eval "show dbs;"
@@ -9,6 +14,8 @@ mongosh --username admin --password my-secret-pw --eval "show dbs;"
 
 # now we will create our own database "ims"
 mongosh --username admin --password my-secret-pw
+   // the following displays the full connect string to use from command line
+   db.getMongo()
    // TAKE CARE: do not use ';' here at the end, otherwise it will create a database named "ims;"
    use ims // switches to a new database, only when first objects are created, the "show dbs" command will find it
    db.createCollection("students");
