@@ -1,8 +1,9 @@
 #execute this inside of docker containers
+POSTGRES_VERSION=17
 DATA_DIRECTORY="/var/lib/postgresql/data"
 LOGS_DIRECTORY="/var/lib/postgresql/data/log"
-BIN_DIRECTORY="/usr/lib/postgresql/16/bin"
-CONFIG_DIRECTORY="/usr/lib/postgresql/16/config"
+BIN_DIRECTORY="/usr/lib/postgresql/${POSTGRES_VERSION}/bin"
+CONFIG_DIRECTORY="/usr/lib/postgresql/${POSTGRES_VERSION}/config"
 
 # TODO: is necessary only once, so best use it in a docker compose script
 sed -i 's/#wal_level = replica/wal_level = hot_standby/' $DATA_DIRECTORY/postgresql.conf
