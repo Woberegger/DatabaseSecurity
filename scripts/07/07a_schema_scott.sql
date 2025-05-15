@@ -1,4 +1,6 @@
+-- connect to database as sys user, e.g. docker exec -it -u oracle Oracle23Free sqlplus 'sys/FhIms9999 as sysdba'
 ALTER session SET container=IMS;
+-- the user scott as well as the tables below are used in standard Oracle examples
 CREATE USER SCOTT IDENTIFIED BY tiger DEFAULT TABLESPACE DATA TEMPORARY TABLESPACE TEMP;
 GRANT CONNECT,RESOURCE,UNLIMITED TABLESPACE TO SCOTT;
 CONNECT scott/tiger@IMS
@@ -75,3 +77,4 @@ COMMIT;
 
 SET TERMOUT ON
 SET ECHO ON
+-- continue with 07b_virtual_private_db_preparations.sql to create other users and policy functions
