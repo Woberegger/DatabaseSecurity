@@ -116,9 +116,9 @@ grant select,insert,update,delete on customer_info to app_runtime;
 grant select,insert,update,delete on customer_acct to app_runtime;
 grant read on app_data.customer_balances to app_runtime;
 
-create public synonym get_balance for app_data.get_balance;
-create public synonym update_customer_addr for app_data.update_customer_addr;
-create public synonym customer_balances for app_data.customer_balances;
+create or replace public synonym get_balance for app_data.get_balance;
+create or replace public synonym update_customer_addr for app_data.update_customer_addr;
+create or replace public synonym customer_balances for app_data.customer_balances;
 
 -----------------------------------
 Rem Enable SQL Firewall 
