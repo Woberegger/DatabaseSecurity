@@ -19,9 +19,16 @@ docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
    SET lines 300 pages 0;
    SELECT UserName, user_id FROM all_users ORDER BY 2 ASC;
    -- here we do not need archive logging, which might fill up our HDD space
+   -- this can only be done, when mounted only
+   shutdown immediate;
+   startup mount;
    alter database noarchivelog;
    archive log list;
+   alter database open;
 !
+# if for some reasons archive log files should consume lot of space, do the following in the container
+#rm /opt/oracle/oradata/dbconfig/FREE/dbs/arch*.dbf
+
 # zeige letzte Ausgaben des Oracle Alert-Logs
 docker logs $DOCKER_CONTAINERNAME
 
