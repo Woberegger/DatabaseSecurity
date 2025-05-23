@@ -18,3 +18,4 @@ ALTER PLUGGABLE DATABASE IMS_COPY CLOSE;
 DROP PLUGGABLE DATABASE IMS_COPY INCLUDING DATAFILES;
 -- we expect, that this directory is empty now, as the datafiles were deleted as well
 host ls /opt/oracle/oradata/FREE/IMS_COPY/
+quit
