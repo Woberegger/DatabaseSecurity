@@ -52,9 +52,9 @@ connect sys/FhIms9999@IMS as sysdba
 --
 BEGIN
   -- activate the lines, when the policy was already existing before
-  DBMS_RLS.DROP_POLICY(object_schema     => 'SCOTT',
+  /*DBMS_RLS.DROP_POLICY(object_schema     => 'SCOTT',
                        object_name       => 'EMP',
-                       policy_name       => 'sp_job');
+                       policy_name       => 'sp_job');*/
   DBMS_RLS.ADD_POLICY (object_schema     => 'SCOTT',
                        object_name       => 'EMP',
                        policy_name       => 'sp_job',
