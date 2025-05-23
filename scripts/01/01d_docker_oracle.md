@@ -18,6 +18,9 @@ docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
    show pdbs;
    SET lines 300 pages 0;
    SELECT UserName, user_id FROM all_users ORDER BY 2 ASC;
+   -- here we do not need archive logging, which might fill up our HDD space
+   alter database noarchivelog;
+   archive log list;
 !
 # zeige letzte Ausgaben des Oracle Alert-Logs
 docker logs $DOCKER_CONTAINERNAME
