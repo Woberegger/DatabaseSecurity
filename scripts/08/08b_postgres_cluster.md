@@ -18,7 +18,7 @@ docker_cluster/
 │   └── repmgr.conf
 │   └── postgresql.conf
 
-# in file postgresql.conf we had to change the following line:
+# in file postgresql.conf we have to change the following line:
 #primary_conninfo = 'host=pg-primary port=5432 user=replica password=replica_pass' # connection string to sending server
 
 # Make sure, the shell script is executable:
