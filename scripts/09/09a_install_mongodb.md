@@ -8,6 +8,7 @@ export MONGODB_VERSION=latest
 ### the following would be the interactive docker run command, but we better use docker-compose ###
 #docker run --name mongodb --network ${NETWORK} -d -p 27017:27017 -v /root/mongodb/data:/mongodb/data \
 #   -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=my-secret-pw mongodb/mongodb-community-server:$MONGODB_VERSION
+cd ~student/DatabaseSecurity/scripts/09
 docker-compose -f 09b_mongodb-docker-compose.yaml up -d
 
 # as GUI we will use IntelliJ, however if you want to install compass GUI, you can download it from following URL
