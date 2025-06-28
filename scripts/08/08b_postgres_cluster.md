@@ -59,3 +59,5 @@ docker exec -it pg-replica1 psql -U replica -d replica -c "SELECT * FROM repSche
 #docker volume rm docker_cluster_primary-data docker_cluster_replica1-data docker_cluster_replica2-data
 #docker image rm docker_cluster-primary docker_cluster-replica1 docker_cluster-replica2
  
+# in case that you have corrupted e.g. replica1, then call:
+## docker-compose down -r replica1
