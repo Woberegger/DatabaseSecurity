@@ -21,8 +21,9 @@ docker_cluster/
 # in file postgresql.conf we have to change the following line:
 #primary_conninfo = 'host=pg-primary port=5432 user=replica password=replica_pass' # connection string to sending server
 
+cd ~student/DatabaseSecurity/scripts/08
 # Make sure, the shell script is executable:
-chmod +x docker_cluster/replica/recovery.sh docker_cluster/primary/init_primary.sh
+chmod +x docker_cluster/replica1/recovery.sh docker_cluster/replica2/recovery.sh docker_cluster/primary/init_primary.sh
 cd docker_cluster
 ln -s docker-compose-nofailover.yaml docker-compose.yaml
 # build all 3, but first only start the primary container from docker-compose.yml
