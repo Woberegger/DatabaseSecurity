@@ -24,7 +24,7 @@ docker_cluster/
 # Make sure, the shell script is executable:
 chmod +x docker_cluster/replica/recovery.sh docker_cluster/primary/init_primary.sh
 cd docker_cluster
-ln -s docker-compose-nofailover.yml docker-compose.yml
+ln -s docker-compose-nofailover.yaml docker-compose.yaml
 # build all 3, but first only start the primary container from docker-compose.yml
 docker-compose up -d primary
 #

@@ -1,51 +1,51 @@
-version: '3.8'
-
 services:
   primary:
-    image: postgres:latest
     container_name: pg-primary
+    build:
+      context: ./primary
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: my-secret-pw
       POSTGRES_DB: postgres
-      
     volumes:
       - primary-data:/var/lib/postgresql/data
-      - ./primary/init_primary.sh:/docker-entrypoint-initdb.d/init_primary.sh
+      - ./primary/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5433:5432"
     networks:
       - pgcluster
  
   replica1:
-    image: postgres:latest
     container_name: pg-replica1
+    build:
+      context: ./replica1
     environment:
       POSTGRES_USER: replica    
       POSTGRES_PASSWORD: replica_pass
     volumes:
       - replica1-data:/var/lib/postgresql/data
       - ./replica1/recovery.sh:/docker-entrypoint-initdb.d/recovery.sh
+    ports:
+      - "5434:5432"
     depends_on:
       - primary
-    ports:
-      - "5434:5432"      
     networks:
       - pgcluster
  
   replica2:
-    image: postgres:latest
     container_name: pg-replica2
+    build:
+      context: ./replica2
     environment:
       POSTGRES_USER: replica    
       POSTGRES_PASSWORD: replica_pass
     volumes:
       - replica2-data:/var/lib/postgresql/data
       - ./replica2/recovery.sh:/docker-entrypoint-initdb.d/recovery.sh
-    depends_on:
-      - primary
     ports:
       - "5435:5432"
+    depends_on:
+      - primary
     networks:
       - pgcluster
  
