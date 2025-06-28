@@ -13,10 +13,16 @@ sed -i 's/SecRuleEngine On/SecRuleEngine DetectionOnly/' /etc/modsecurity/modsec
 # restart apache, after having changed that parameter
 systemctl restart apache2
 
-# install python pymongo package
-apt install python3-pymongo
+# install node.js and package manager for it
+  
+apt install -y nodejs npm
+npm install mongodb
 
-# test python connection to mongodb
-python3 ~student/DatabaseSecurity/scripts/10/10c_mongodb_connect.py
-# call the injection script
-python3 ~student/DatabaseSecurity/scripts/10/10c_test_nosql_inj.py
+# the output should show a lot of Mongo... and other methods
+node <<!
+   const mongodb = require('mongodb');
+   console.log(mongodb);
+!
+
+# then call 10b_mongodb_connect
+node 10b_mongodb_connect.js
