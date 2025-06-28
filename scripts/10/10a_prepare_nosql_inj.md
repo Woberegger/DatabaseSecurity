@@ -25,27 +25,27 @@ pecl install mongodb
 php --ini
 
 echo "extension=mongodb.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
-
+# for some reason php --ini shows wrong file - apache uses a different one
+echo "extension=mongodb.so" >> /etc/php/8.3/apache2/php.ini
 cd /var/www/html/
 mkdir php-quickstart
 cd php-quickstart
 touch quickstart.php
 composer require mongodb/mongodb
 
-#copy file test_nosql_inj.php to /var/www/html/
-cp ~student/DatabaseSecurity/scripts/10/10a_test_nosql_inj.php /var/www/html
-
 # in lecture 4 we have enabled ModSecurity WAF firewall, we should disable this again (only detect it, but to not prevent execution)
 sed -i 's/SecRuleEngine On/SecRuleEngine DetectionOnly/' /etc/modsecurity/modsecurity.conf
 # restart apache, after having changed that parameter
 systemctl restart apache2
 
-# then call web screen http://<dbsecX-IP>/10a_test_nosql_inj.php
-apt install -y nodejs npm
-npm install mongodb
+# open following website in brower, it should show loaded module mongodb
+http://<dbsecX>/info.php
 
-# the output should show a lot of Mongo... and other methods
-node <<!
-   const mongodb = require('mongodb');
-   console.log(mongodb);
-!
+#copy file 10a_test_nosql_inj.php to /var/www/html/php-quickstart/, where we have the mongoDB libraries
+cp ~student/DatabaseSecurity/scripts/10/10a_test_nosql_inj.php /var/www/html/php-quickstart/quickstart.php
+
+# then call web screen http://<dbsecX-IP>/php-quickstart/quickstart.php
+# enter injected data into form
+
+# in case of error check following file 
+tail /var/log/apache2/error.log
