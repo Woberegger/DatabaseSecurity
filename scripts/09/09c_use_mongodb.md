@@ -95,3 +95,8 @@ mongosh --username admin --password my-secret-pw
      }
    ]);
 
+// for later nosql injection tests we create some additional users
+   use admin
+   db.users.insertOne({"username": "admincopy", "password": "secret"});
+   db.users.insertOne({"username": "normaluser", "password": "normal"});
+   db.users.insertOne({"username": "readonlyuser", "password": "readonly"});
