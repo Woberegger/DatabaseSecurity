@@ -1,27 +1,28 @@
 <?php
-require 'php-quickstart/vendor/autoload.php'; // Composer MongoDB driver
+require 'vendor/autoload.php'; // Composer MongoDB driver
 
-$client = new MongoDB\Client("mongodb://localhost:27017");
-$collection = $client->testdb->users;
+$client = new MongoDB\Client('mongodb://admin:my-secret-pw@localhost:27017/?authSource=admin');
+$db = $client->selectDatabase('ims');
+$collection = $db->selectCollection->students;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST["username"]; // pass something like  { "$ne": null }
-    $password = $_POST["password"]; // pass something like  { "$ne": null }
+    $name = $_POST["name"]; // pass something like  { "$ne": null }
+    $course = $_POST["course"]; // pass something like  { "$ne": null }
 
     // ⚠️ Vulnerable query (no input sanitization)
-    $query = ['username' => $username, 'password' => $password];
-    $user = $collection->findOne($query);
+    $query = ['name' => $name, 'course' => $course];
+    $student = $collection->findOne($query);
 
-    if ($user) {
-        echo "<p>Welcome, " . htmlspecialchars($user['username']) . "!</p>";
+    if ($student) {
+        echo "<p>Welcome, " . htmlspecialchars($student['name']) . "!</p>";
     } else {
-        echo "<p>Login failed.</p>";
+        echo "<p>injection into students not possible</p>";
     }
 }
 ?>
 
 <form method="POST">
-    <label>Username: <input name="username" /></label><br>
-    <label>Password: <input name="password" type="password" /></label><br>
-    <button type="submit">Login</button>
+    <label>Student: <input name="name" /></label><br>
+    <label>Course: <input name="course" /></label><br>
+    <button type="submit">Query</button>
 </form>
