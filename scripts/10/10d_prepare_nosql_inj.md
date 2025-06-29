@@ -42,7 +42,7 @@ systemctl restart apache2
 http://<dbsecX>/info.php
 
 #copy file 10a_test_nosql_inj.php to /var/www/html/php-quickstart/, where we have the mongoDB libraries
-cp ~student/DatabaseSecurity/scripts/10/10a_test_nosql_inj.php /var/www/html/php-quickstart/quickstart.php
+cp ~student/DatabaseSecurity/scripts/10/10d_test_nosql_inj.php /var/www/html/php-quickstart/quickstart.php
 
 # then call web screen http://<dbsecX-IP>/php-quickstart/quickstart.php
 # enter injected data into form
