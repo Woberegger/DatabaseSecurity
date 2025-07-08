@@ -3,6 +3,8 @@ sudo -s
 type docker # check, if docker is already installed
 if [ $? -gt 0 ]; then
    snap install docker
+   # eventuell nötig, manuell zu starten
+   systemctl start snap.docker.dockerd # siehe Files in /etc/systemd/system
 fi
 # WICHTIG: AppArmor kann so konfiguriert sein, dass es "docker stop" ablehnt, dazu das File "docker" wie in Zeile1
 # des Config File "docker" beschrieben ablegen und aktivieren
