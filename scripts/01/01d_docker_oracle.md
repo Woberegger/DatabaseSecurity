@@ -1,8 +1,11 @@
-# Oracle container download und erster Test, indem wir uns die User anzeigen lassen
-# man kann podman oder docker verwenden, um die Container zu betreiben
-# see https://container-registry.oracle.com/ords/f?p=113:4:106648115637034:::4:P4_REPOSITORY,AI_REPOSITORY,AI_REPOSITORY_NAME,P4_REPOSITORY_NAME,P4_EULA_ID,P4_BUSINESS_AREA_ID:1863,1863,Oracle%20Database%20Free,Oracle%20Database%20Free,1,0&cs=3vh3v7Bx-M1AhcZcni5BZw08qK4bc49cPe_X8TG5ZkK6Z8YJb6F_7s-kOEqsi9ahcAJrOaMTAC5QDMo1FbyMgWA
+# DbSec01 - install oracle
 
-# Das Image ist ca. 14 GB gross, d.h. bitte auf ausreichend Speicher prüfen
+Oracle container download und erster Test, indem wir uns die User anzeigen lassen:
+Man kann podman oder docker verwenden, um die Container zu betreiben
+siehe [Oracle docker download info]( https://container-registry.oracle.com/ords/f?p=113:4:106648115637034:::4:P4_REPOSITORY,AI_REPOSITORY,AI_REPOSITORY_NAME,P4_REPOSITORY_NAME,P4_EULA_ID,P4_BUSINESS_AREA_ID:1863,1863,Oracle%20Database%20Free,Oracle%20Database%20Free,1,0&cs=3vh3v7Bx-M1AhcZcni5BZw08qK4bc49cPe_X8TG5ZkK6Z8YJb6F_7s-kOEqsi9ahcAJrOaMTAC5QDMo1FbyMgWA)
+
+Das Image ist ca. 14 GB gross, d.h. bitte auf ausreichend Speicher prüfen
+```bash
 docker pull container-registry.oracle.com/database/free:latest
 export DOCKER_CONTAINERNAME=Oracle23Free
 export NETWORK=my-docker-network
@@ -10,10 +13,13 @@ export NETWORK=my-docker-network
 docker run -d --name $DOCKER_CONTAINERNAME --network ${NETWORK} -p 1521:1521 -p 2484:2484 --log-opt max-size=100m container-registry.oracle.com/database/free:latest
 sleep 5 # give DB some time to startup (when "ORA-01109: database not open" pops up, then try again
 docker exec $DOCKER_CONTAINERNAME ./setPassword.sh FhIms9999
+```
 
-# verbinde mit der Datenbank mit sqlplus innerhalb des Containers und zeige an, welche pdbs und welche user es gibt
-# über --tty=false kann man eine Kommandosequenz als Here-Document übergeben
-# das "-s" bei sqlplus gibt keinen SQL-Prompt und zeigt keinen SQL-Startscreen, ist daher bei nicht-interaktiven Kommandos anzuraten, sonst aber nicht
+verbinde mit der Datenbank mit sqlplus innerhalb des Containers und zeige an, welche pdbs und welche user es gibt
+über --tty=false kann man eine Kommandosequenz als Here-Document übergeben
+das "-s" bei sqlplus gibt keinen SQL-Prompt und zeigt keinen SQL-Startscreen, ist daher bei nicht-interaktiven Kommandos anzuraten, sonst aber nicht
+```bash
+export DOCKER_CONTAINERNAME=Oracle23Free
 docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
    show pdbs;
    SET lines 300 pages 0;
@@ -26,13 +32,23 @@ docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
    archive log list;
    alter database open;
 !
-# if for some reasons archive log files should consume lot of space, do the following in the container
-#rm /opt/oracle/oradata/dbconfig/FREE/dbs/arch*.dbf
+```
 
-# zeige letzte Ausgaben des Oracle Alert-Logs
+wenn aus irgendwelchen Gründen die Archive logfiles schon angelegt wurden und viel Platz belegen, dann führe folgendes aus:
+```bash
+export DOCKER_CONTAINERNAME=Oracle23Free
+docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
+   rm /opt/oracle/oradata/dbconfig/FREE/dbs/arch*.dbf
+!
+```
+
+zeige letzte Ausgaben des Oracle Alert-Logs
+```bash
 docker logs $DOCKER_CONTAINERNAME
+```
 
-# da hier die Logfiles sehr gross werden können (und sogar allen Speicher auffressen), empfiehlt sich logrotate
+da hier die Logfiles sehr gross werden können (und sogar allen Speicher auffressen), empfiehlt sich logrotate
+```bash
 LogPath=$(dirname $(docker inspect --format='{{.LogPath}}' Oracle23Free))
 
 cat >/etc/logrotate.d/docker-oracle-logs <<!
@@ -47,8 +63,11 @@ ${LogPath}/*.log {
 !
 # Teste Aufruf:
 logrotate -f /etc/logrotate.d/docker-oracle-logs
+```
 
-# jetzt legen wir eine eigene Pluggable DB an als Kopie der Default-DB "FREEPDB1"
+jetzt legen wir eine eigene Pluggable DB an als Kopie der Default-DB "FREEPDB1"
+```bash
+export DOCKER_CONTAINERNAME=Oracle23Free
 docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
    SET lines 300 pages 0;
    -- Zeige die Struktur der Files an, damit wir das dann im File_Name_Convert analog dazu anlegen
@@ -61,7 +80,11 @@ docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
    ALTER session SET container=IMS;
    SELECT FILE_NAME FROM dba_data_files;
 !
-# wir müssen einen tns-Alias für die neue DB anlegen, damit wir mit user/pwd@PluggableDB uns anmelden können
+```
+
+wir müssen einen tns-Alias für die neue DB anlegen, damit wir mit user/pwd@PluggableDB uns anmelden können
+```bash
+export DOCKER_CONTAINERNAME=Oracle23Free
 docker exec -it $DOCKER_CONTAINERNAME /bin/bash
 # vorher prüfen, ob der Pfad und Datei existiert, bei älteren Versionen ist das z.B. 23c statt 23ai
 cat /opt/oracle/product/23ai/dbhomeFree/network/admin/tnsnames.ora
@@ -77,8 +100,11 @@ IMS =
   )
 !
 exit # exit from docker container
+```
   
-# damit wir später saubere Trennung haben, legen wir eigenen Tablespace für Daten und Indizes an
+damit wir später saubere Trennung haben, legen wir eigenen Tablespace für Daten und Indizes an
+```bash
+export DOCKER_CONTAINERNAME=Oracle23Free
 docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
    -- WICHTIG: bei den meisten unserer Test-Anwendungen müssen wir in die jeweilige PDB wechseln, also das "ALTER SESSION" nicht vergessen!!!
    ALTER session SET container=IMS;
@@ -87,8 +113,11 @@ docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
    SELECT FILE_NAME FROM dba_data_files;
    SELECT tablespace_name, INITIAL_EXTENT, NEXT_EXTENT, ENCRYPTED, EXTENT_MANAGEMENT FROM DBA_TableSpaces;
 !
+```
 
-# und dann legen wir noch einen Applikationsuser in unserer PDB an, unter dem dann die Tabellen installiert werden
+und dann legen wir noch einen Applikationsuser in unserer PDB an, unter dem dann die Tabellen installiert werden
+```bash
+export DOCKER_CONTAINERNAME=Oracle23Free
 docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
    ALTER session SET container=IMS;
    -- zuvor legen wir noch eine Rolle an, damit wir die dann dem User geben, bei einem weiteren User können wir dieselbe Rolle weiterverwenden
@@ -97,33 +126,46 @@ docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
    GRANT CONNECT, RESOURCE, CREATE TABLE, CREATE PROCEDURE, CREATE VIEW, CREATE DATABASE LINK, CREATE SYNONYM, CREATE ANY DIRECTORY TO Application;
    GRANT CONNECT, RESOURCE, UNLIMITED TABLESPACE, Application TO Ims;
 !
+```
 
-# und dann verbinden wir uns testweise mit dem neu angelegten User, der sollte zumindest ein paar Systemtabellen finden, eigene gibt es noch keine
+und dann verbinden wir uns testweise mit dem neu angelegten User, der sollte zumindest ein paar Systemtabellen finden, eigene gibt es noch keine
+```bash
+export DOCKER_CONTAINERNAME=Oracle23Free
 docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s ims/FhIms9999@IMS <<!
    SELECT Table_Name FROM All_Tables WHERE RowNum<=10;
    prompt hier wird erwarteterweise noch nichts gefunden
    SELECT * FROM cat;
 !
+```
 
-### wenn man später die Pluggable DB droppen und neu anlegen will, muss man wie folgt vorgehen (Statements auskommentiert)
-# docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
+wenn man später die Pluggable DB droppen und neu anlegen will, muss man wie folgt vorgehen (**Statements auskommentiert**)
+```bash
+#export DOCKER_CONTAINERNAME=Oracle23Free
+#   docker exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
 #   alter pluggable database IMS close;
 #   alter pluggable database IMS unplug into '/opt/oracle/oradata/ims.xml';
 #   drop pluggable database IMS INCLUDING DATAFILES;
 #!
+```
 
-###### später, wenn der Container runtergefahren wurde, wie folgt vorgehen zum Wiederhochfahren und Einloggen #########
+später, wenn der Container runtergefahren wurde, wie folgt vorgehen zum Wiederhochfahren und Einloggen
+```bash
 docker start Oracle23Free
 docker exec -it Oracle23Free sqlplus / as sysdba
+```
 
-### optional kann man instantclient installieren und damit sqlplus von ausserhalb verwenden, ist aber nicht nötig...
+optional kann man instantclient installieren und damit sqlplus von ausserhalb verwenden, ist aber nicht nötig (**Statements auskommentiert**).
+Download von [Oracle Install Client download page](https://www.oracle.com/de/database/technologies/instant-client/linux-x86-64-downloads.html)
+```bash
 # cd /usr/local
 # mkdir instantclient
 # cd instantclient
-# wget https://download.oracle.com/otn_software/linux/instantclient/23c/instantclient-basic-linux.x64-23.3.0.0.0.zip
-# wget https://download.oracle.com/otn_software/linux/instantclient/23c/instantclient-sqlplus-linux.x64-23.3.0.0.0.zip
-# unzip instantclient-basic-linux.x64-23.3.0.0.0.zip unzip instantclient-sqlplus-linux.x64-23.3.0.0.0.zip
-# export PATH=$PATH:/usr/local/instantclient/instantclient_23_3
-# export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/instantclient/instantclient_23_3
-
-sqlplus sys@localhost:1521/FREEPDB1 as sysdba
+# check, if links are still correct
+# wget https://download.oracle.com/otn_software/linux/instantclient/23ai/instantclient-basic-linux.x64-23.26.0.0.0.zip
+# wget https://download.oracle.com/otn_software/linux/instantclient/23ai/instantclient-sqlplus-linux.x64-23.26.0.0.0.zip
+# unzip instantclient-basic-linux.x64-23.3260.0.0.zip unzip instantclient-sqlplus-linux.x64-23.26.0.0.0.zip
+# export PATH=$PATH:/usr/local/instantclient/instantclient_23_26
+# export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/instantclient/instantclient_23_26
+# Test call
+# sqlplus sys@localhost:1521/FREEPDB1 as sysdba
+```

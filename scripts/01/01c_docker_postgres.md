@@ -1,4 +1,7 @@
-# Postgres container download und erster Test, indem wir eine Datenbank anlegen
+# DBSec01 - install postgres
+
+Postgres container download und erster Test, indem wir eine Datenbank anlegen
+```bash
 docker pull postgres
 export DOCKER_CONTAINERNAME=Postgres
 # damit die einzelnen Container miteinander kommunizieren können, müssen wir sie ins selbe virtuelle Netzwerk reinhängen
@@ -18,10 +21,15 @@ docker exec -i --tty=false -u postgres ${DOCKER_CONTAINERNAME} psql <<!
       CONNECTION LIMIT = 100;
    \c ims
 !
+```
 
-###### später, wenn der Container runtergefahren wurde, wie folgt vorgehen zum Wiederhochfahren und Einloggen #########
+später, wenn der Container runtergefahren wurde, wie folgt vorgehen zum Wiederhochfahren und Einloggen #########
+```bash
 docker start Postgres
 sleep 3 # give the container some time to start up
 docker exec -it -u postgres Postgres psql
-# wenn man später mal das Netzwerk ändern will:
-# docker network connect my-docker-network Postgres
+```
+wenn man später mal das Netzwerk ändern will:
+```bash
+docker network connect my-docker-network Postgres
+```

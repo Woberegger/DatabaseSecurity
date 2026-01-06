@@ -1,10 +1,15 @@
-# install package for pgaudit into the Postgres container
+# DBSec03 - install pgaudit for postgres
+
+install package for pgaudit into the Postgres container
+```bash
 docker exec -i --tty=false -u root Postgres /bin/bash <<!
    apt update -y
    apt install -y postgresql-17-pgaudit
 !
+```
 
-# as OS-user postgres modify some settings to enable pgaudit in config file
+as OS-user postgres modify some settings to enable pgaudit in config file
+```bash
 docker exec -i --tty=false -u postgres Postgres /bin/bash <<!
    cd /var/lib/postgresql/data
    # save the old config file, if we should need to rollback to that one
@@ -14,8 +19,10 @@ docker exec -i --tty=false -u postgres Postgres /bin/bash <<!
    sed -i "s/#log_destination = 'stderr'/log_destination = 'stderr'/" postgresql.conf
    sed -i "s/#logging_collector = off/logging_collector = on/" postgresql.conf
 !
+```
 
-# and now some new variables for pgaudit, which are not existing yet in config file
+and now some new variables for pgaudit, which are not existing yet in config file
+```bash
 docker exec -i --tty=false -u postgres Postgres /bin/bash <<!
    cat >>/var/lib/postgresql/data/postgresql.conf <<EOF
       pgaudit.log_catalog='on'
@@ -27,19 +34,25 @@ docker exec -i --tty=false -u postgres Postgres /bin/bash <<!
       pgaudit.log_relation='on'
 EOF
 !
+```
 
-# stop and start Postgres
+stop and start Postgres (easiest by restarting the docker container, this is easier, than just starting the database)
+```bash
 docker stop Postgres
 docker start Postgres
+```
 
-# create pgaudit extension in our test DB and configure read/ddl actions to log
+create pgaudit extension in our test DB and configure read/ddl actions to log
+```bash
 docker exec -i --tty=false -u postgres Postgres psql <<!
    \c dvdrental
    CREATE EXTENSION pgaudit;
    ALTER DATABASE dvdrental SET pgaudit.log = 'read,ddl';
 !
+```
 
-# and now as user objectowner create a dummy table and check, if auditing logs this
+and now as user objectowner create a dummy table and check, if auditing logs this
+```bash
 docker exec -i --tty=false -u postgres Postgres psql -d dvdrental -U objectowner <<!
    -- and now we create some dummy table to check the audit logs
    drop table if exists dvd.dummy;
@@ -49,9 +62,12 @@ docker exec -i --tty=false -u postgres Postgres psql -d dvdrental -U objectowner
    -- however the following select should be logged
    SELECT * FROM dvd.dummy;
 !
-# the docker logging (as we have directed to stderr) should show the recent actions
-# depending on settings it might also be logged to /var/lib/postgresql/data/log/ directory
+```
+the docker logging (as we have directed to stderr) should show the recent actions
+depending on settings it might also be logged to /var/lib/postgresql/data/log/ directory
+```bash
 docker logs Postgres | tail -n 100
 docker exec -i --tty=false -u postgres Postgres /bin/bash <<!
    grep -i dummy /var/lib/postgresql/data/log/postgresql*.log
 !
+```
