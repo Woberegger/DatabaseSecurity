@@ -1,4 +1,7 @@
-# the following has to be done as root user (best in a separate docker session)
+# DBSec06 - preparation for Oracle TLS encryption
+
+the following has to be executed as root user (in a docker session)
+```bash
 docker exec -it -u root Oracle23Free /bin/bash
 useradd -g oinstall -d /home/oraclient -s /bin/bash oraclient
 echo "oraclient:my-secret-pw" | chpasswd
@@ -16,3 +19,4 @@ export TNS_ADMIN=\$HOME/tnsadmin
 source ~/.bashrc
 exit # change back to root
 exit # exit docker container
+```
