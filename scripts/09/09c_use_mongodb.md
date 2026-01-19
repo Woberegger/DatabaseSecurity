@@ -1,18 +1,30 @@
-# once the mongodb is running, we can try with "mongosh" CLI or with our GUI client
-# you should use '//' for comments (this also works within one command struct)
-# the ';' is used to terminate statements within one line, at the end of the line it is optional.
+# DBSec09 - use MongoDB
 
-# connect to the mongoDB docker container
-# Variant a) directly use mongosh with docker exec command
+once the mongodb is running, we can try with "mongosh" CLI or with our GUI client
+you should use '//' for comments (this also works within one command struct)
+the ';' is used to terminate statements within one line, at the end of the line it is optional.
+
+## connect to the mongoDB docker container
+
+- Variant a) directly use mongosh with docker exec command
+```bash
 docker exec -it -u root mongodb mongosh mongodb://admin:my-secret-pw@mongodb:27017
-
-# Variant b) first with bash and then mongosh
+```
+- Variant b) first with bash and then mongosh
+```bash
 docker exec -it -u root mongodb /bin/bash
 # and inside the docker container try mongosh CLI for mongodb to show, which databases there exist
 mongosh --username admin --password my-secret-pw --eval "show dbs;"
-# this should find the 3 databases admin, config and local
+```
 
-# now we will create our own database "ims"
+>Expected result: this should find the 3 databases admin, config and local
+
+## now create our own database "ims"
+
+execute this mongosh inside of the docker container<br>
+*TAKE CARE: better execute it in parts to see the partial results*
+
+```bash
 mongosh --username admin --password my-secret-pw
    // the following displays the full connect string to use from command line
    db.getMongo()
@@ -94,9 +106,13 @@ mongosh --username admin --password my-secret-pw
        $group: { _id: "$course", avgAge: { $avg: "$age" } }
      }
    ]);
+```
 
-// for later nosql injection tests we create some additional users
+for later nosql injection tests we create some additional users
+```bash
+mongosh --username admin --password my-secret-pw
    use admin
    db.users.insertOne({"username": "admincopy", "password": "secret"});
    db.users.insertOne({"username": "normaluser", "password": "normal"});
    db.users.insertOne({"username": "readonlyuser", "password": "readonly"});
+```
