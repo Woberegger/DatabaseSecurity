@@ -1,6 +1,6 @@
 #!/bin/bash
 # should replace /usr/local/bin/docker-entrypoint.sh on the docker containers...
-POSTGRES_VERSION=17
+POSTGRES_VERSION=18
 DATA_DIRECTORY="/var/lib/postgresql/data"
 LOGS_DIRECTORY="/var/lib/postgresql/data/log"
 BIN_DIRECTORY="/usr/lib/postgresql/${POSTGRES_VERSION}/bin"
