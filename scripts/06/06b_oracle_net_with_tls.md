@@ -4,7 +4,7 @@
 all actions executed as user "oracle" in the database docker container
 
 ```bash
-docker exec -it -u oracle Oracle23Free /bin/bash
+docker exec -it -u oracle OracleFree /bin/bash
 # set variables
 WALLET_DIR=$ORACLE_HOME/wallet
 CN=db$(hostname).localdomain
@@ -41,7 +41,7 @@ exit # exit the docker container
 change to the previously created user "oraclient" and set the wallet there
 (for simplicity we use the client on the same system, in a real-world example the client could be on a separate system)
 ```bash
-docker exec -it -u oraclient Oracle23Free /bin/bash
+docker exec -it -u oraclient OracleFree /bin/bash
 WALLET_DIR=$HOME/wallet
 WALLETPWD=WalletPasswd123
 PARTNERCN=db$(hostname).localdomain
@@ -82,7 +82,7 @@ exit # exit the docker container
 all actions executed as user "oracle" in the database docker container
 
 ```bash
-docker exec -it -u oracle Oracle23Free /bin/bash
+docker exec -it -u oracle OracleFree /bin/bash
 # set variables
 WALLET_DIR=$ORACLE_HOME/wallet
 CN=db$(hostname).localdomain
@@ -115,10 +115,10 @@ tells us, whereas the other 2 files can be copied without changes<br>
  e.g.:   (SECURITY=(SSL_SERVER_CERT_DN="CN=db365169eb3fe6.localdomain"))
 
 ```bash
-docker cp listener.ora.tls.md Oracle23Free:/opt/oracle/oradata/dbconfig/FREE/listener.ora
-docker cp sqlnet.ora.tls.md Oracle23Free:/opt/oracle/oradata/dbconfig/FREE/sqlnet.ora
+docker cp listener.ora.tls.md OracleFree:/opt/oracle/oradata/dbconfig/FREE/listener.ora
+docker cp sqlnet.ora.tls.md OracleFree:/opt/oracle/oradata/dbconfig/FREE/sqlnet.ora
 # modify tnsnames.ora.tls.md first and then
-docker cp tnsnames.ora.tls.md Oracle23Free:/opt/oracle/oradata/dbconfig/FREE/tnsnames.ora
+docker cp tnsnames.ora.tls.md OracleFree:/opt/oracle/oradata/dbconfig/FREE/tnsnames.ora
 ```
 
 after that restart listener (a potential error will be shown immediately)

@@ -1,4 +1,4 @@
--- connect to database as sys user, e.g. docker exec -it -u oracle Oracle23Free sqlplus 'sys/FhIms9999@IMS as sysdba'
+-- connect to database as sys user, e.g. docker exec -it -u oracle OracleFree sqlplus 'sys/FhIms9999@IMS as sysdba'
 ALTER session SET container=IMS;
 
 /* the following is not necessary, it shall only demonstrate, how a specific context upon login can be set, which could later be evaluated in the policy

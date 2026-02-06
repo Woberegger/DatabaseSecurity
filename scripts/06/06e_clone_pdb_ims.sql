@@ -1,6 +1,6 @@
--- connect to database as sys user, e.g. docker exec -it -u oracle Oracle23Free sqlplus '/ as sysdba'
--- e.g. docker cp ~/DatabaseSecurity/scripts/06/06e_clone_pdb_ims.sql Oracle23Free:/tmp/
--- time docker exec -it -u oracle Oracle23Free sqlplus / as sysdba @/tmp/06e_clone_pdb_ims.sql
+-- connect to database as sys user, e.g. docker exec -it -u oracle OracleFree sqlplus '/ as sysdba'
+-- e.g. docker cp ~/DatabaseSecurity/scripts/06/06e_clone_pdb_ims.sql OracleFree:/tmp/
+-- time docker exec -it -u oracle OracleFree sqlplus / as sysdba @/tmp/06e_clone_pdb_ims.sql
 PROMPT IMPORTANT: this only works, when you are connected to the CDB and not to other PDB
 ALTER SESSION SET CONTAINER=cdb$root;
 SHOW CON_NAME;

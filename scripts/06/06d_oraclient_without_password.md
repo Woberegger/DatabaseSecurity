@@ -4,7 +4,7 @@
 
 here we want to configure our client to allow passwordless login by storing password in wallet
 ```bash
-docker exec -it -u oraclient Oracle23Free /bin/bash
+docker exec -it -u oraclient OracleFree /bin/bash
 WALLET_DIR=$HOME/wallet
 WALLETPWD=WalletPasswd123
 # assume, that entry "IMS" exists in local tnsnames.ora

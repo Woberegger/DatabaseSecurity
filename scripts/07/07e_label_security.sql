@@ -1,4 +1,4 @@
--- connect to database as sys user, e.g. docker exec -it -u oracle Oracle23Free sqlplus 'sys/FhIms9999@IMS as sysdba'
+-- connect to database as sys user, e.g. docker exec -it -u oracle OracleFree sqlplus 'sys/FhIms9999@IMS as sysdba'
 ALTER session SET container=IMS;
 select value from v$option where parameter like '%Label%';
 -- if this says "FALSE, then run following script

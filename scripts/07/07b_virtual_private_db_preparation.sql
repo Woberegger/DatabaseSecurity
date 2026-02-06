@@ -1,4 +1,4 @@
--- connect to database as sys user, e.g. docker exec -it -u oracle Oracle23Free sqlplus 'sys/FhIms9999 as sysdba'
+-- connect to database as sys user, e.g. docker exec -it -u oracle OracleFree sqlplus 'sys/FhIms9999 as sysdba'
 ALTER session SET container=IMS;
 -- create a 2nd DB user, who shall only have limited access to scott's tables (he is a manager and shall see all from his dept)
 CREATE USER JONES IDENTIFIED BY jones1234 DEFAULT TABLESPACE DATA TEMPORARY TABLESPACE TEMP;
