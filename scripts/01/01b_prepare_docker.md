@@ -1,18 +1,25 @@
 # DBSec01 - install docker
 
 the following installs "docker" or "podman", syntax is more or less identical, but "podman" is more secure and does not require root privileges
+later we use environment variable $CONTAINERCMD in our scripts, so they are compatible with both
 ```bash
 sudo -s
    # this differs between Debian-based and RedHat-based Linux distributions, on RedHat we use podman instead of docker (https://podman.io/)
    if [ -f /etc/redhat-release ]; then
+      echo "export CONTAINERCMD=podman" >>~/.bashrc
+      echo "export PATH=\$PATH:/usr/local/bin" >>~/.bashrc
+      source ~/.bashrc
       type podman # check, if podman is already installed
       if [ $? -gt 0 ]; then
          yum install -y podman
+         pip install podman-compose
       fi
       # maybe manual start is needed - see files in /etc/systemd/system
       systemctl enable podman
       systemctl start podman
    else
+      echo "export CONTAINERCMD=docker" >>~/.bashrc
+      source ~/.bashrc  
       type docker # check, if docker is already installed
       if [ $? -gt 0 ]; then
          snap install docker
