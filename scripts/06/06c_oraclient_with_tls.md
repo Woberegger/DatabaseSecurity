@@ -1,10 +1,10 @@
 # DBSec06 - OracleNet with TLS encryption - client final config
 
-*all actions executed as user "oraclient" in the database docker container*
+*all actions executed as user "oraclient" in the database docker/podman container*
 
 adapt client to work with wallet
 ```bash
-docker exec -it -u oraclient OracleFree /bin/bash
+$CONTAINERCMD exec -it -u oraclient OracleFree /bin/bash
 cd ~/tnsadmin
 cp /opt/oracle/product/26ai/dbhomeFree/network/admin/sqlnet.ora .
 cp /opt/oracle/product/26ai/dbhomeFree/network/admin/tnsnames.ora .

@@ -2,7 +2,7 @@
 
 the following has to be executed as root user (in a docker session)
 ```bash
-docker exec -it -u root OracleFree /bin/bash
+$CONTAINERCMD exec -it -u root OracleFree /bin/bash
 useradd -g oinstall -d /home/oraclient -s /bin/bash oraclient
 echo "oraclient:my-secret-pw" | chpasswd
 

@@ -4,7 +4,7 @@
 all actions executed as user "oracle" in the database docker container
 
 ```bash
-docker exec -it -u oracle OracleFree /bin/bash
+$CONTAINERCMD exec -it -u oracle OracleFree /bin/bash
 # set variables
 WALLET_DIR=$ORACLE_HOME/wallet
 CN=db$(hostname).localdomain
@@ -14,7 +14,7 @@ WALLETPWD=WalletPasswd123
 
 *all following actions have to be done in the same docker session as user "oracle", as they use the variables from above*
 
-create server-side auto-login wallet inside of docker container
+create server-side auto-login wallet inside of docker/podman container
 ```bash
 mkdir $WALLET_DIR
 orapki wallet create -wallet $WALLET_DIR -pwd $WALLETPWD -auto_login_local
@@ -34,14 +34,14 @@ Export the certificate, so we can load it into the client wallet later.
 ```bash
 orapki wallet export -wallet $WALLET_DIR -pwd $WALLETPWD -dn "CN=$CN" -cert /tmp/${CN}.crt
 chmod a+r /tmp/${CN}.crt
-exit # exit the docker container
+exit # exit the container
 ```
 
 ## client certificate creation: as OS-user, which acts as client ("oraclient")
 change to the previously created user "oraclient" and set the wallet there
 (for simplicity we use the client on the same system, in a real-world example the client could be on a separate system)
 ```bash
-docker exec -it -u oraclient OracleFree /bin/bash
+$CONTAINERCMD exec -it -u oraclient OracleFree /bin/bash
 WALLET_DIR=$HOME/wallet
 WALLETPWD=WalletPasswd123
 PARTNERCN=db$(hostname).localdomain
@@ -50,7 +50,7 @@ mkdir $WALLET_DIR
 orapki wallet create -wallet $WALLET_DIR -pwd $WALLETPWD -auto_login_local
 ```
 
-*all following actions have to be done in the same docker session as user "oraclient", as they use the variables from above*
+*all following actions have to be done in the same docker/podman session as user "oraclient", as they use the variables from above*
 
 create a self-signed certificate for the client and load it in its wallet
 ```bash
@@ -75,14 +75,14 @@ orapki wallet add -wallet $WALLET_DIR -pwd $WALLETPWD -trusted_cert -cert /tmp/$
 check content of client wallet again, it now includes the server certificate
 ```bash
 orapki wallet display -wallet $WALLET_DIR -pwd $WALLETPWD
-exit # exit the docker container
+exit # exit the container
 ```
 
 ## client certificate loading: as OS-user, under which DB runs ("oracle")
 all actions executed as user "oracle" in the database docker container
 
 ```bash
-docker exec -it -u oracle OracleFree /bin/bash
+$CONTAINERCMD exec -it -u oracle OracleFree /bin/bash
 # set variables
 WALLET_DIR=$ORACLE_HOME/wallet
 CN=db$(hostname).localdomain
@@ -115,10 +115,10 @@ tells us, whereas the other 2 files can be copied without changes<br>
  e.g.:   (SECURITY=(SSL_SERVER_CERT_DN="CN=db365169eb3fe6.localdomain"))
 
 ```bash
-docker cp listener.ora.tls.md OracleFree:/opt/oracle/oradata/dbconfig/FREE/listener.ora
-docker cp sqlnet.ora.tls.md OracleFree:/opt/oracle/oradata/dbconfig/FREE/sqlnet.ora
+$CONTAINERCMD cp listener.ora.tls.md OracleFree:/opt/oracle/oradata/dbconfig/FREE/listener.ora
+$CONTAINERCMD cp sqlnet.ora.tls.md OracleFree:/opt/oracle/oradata/dbconfig/FREE/sqlnet.ora
 # modify tnsnames.ora.tls.md first and then
-docker cp tnsnames.ora.tls.md OracleFree:/opt/oracle/oradata/dbconfig/FREE/tnsnames.ora
+$CONTAINERCMD cp tnsnames.ora.tls.md OracleFree:/opt/oracle/oradata/dbconfig/FREE/tnsnames.ora
 ```
 
 after that restart listener (a potential error will be shown immediately)

@@ -4,14 +4,14 @@ all actions on OpenStack platform as superuser
 ```bash
 sudo -s
 # start mongodb container
-docker start mongodb
+$CONTAINERCMD start mongodb
 ```
 
 *the steps for Apache can be skipped, if those were already executed in the Python noSQL injection.*
 
 verify, if port 27017 is exposed externally
 ```bash
-docker ps | grep mongodb | grep 27017
+$CONTAINERCMD ps | grep mongodb | grep 27017
 ```
 expected output similar to following one:
 >2b151104eeb3   mongodb/mongodb-community-server:latest   "python3 /usr/local/…"   7 weeks ago    Up 9 minutes   0.0.0.0:27017->27017/tcp, :::27017->27017/tcp      mongodb

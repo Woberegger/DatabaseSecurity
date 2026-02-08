@@ -7,7 +7,7 @@ or directyl in docker container:
 [](https://github.com/Woberegger/DatabaseSecurity/blob/main/scripts/02/02b_postgres_basic_permissions.sql)
 
 ```bash
-cat ~student/DatabaseSecurity/scripts/02/02b_postgres_basic_permissions.sql | $CONTAINERCMD exec -it -u postgres Postgres psql -d ims
+cat ~student/DatabaseSecurity/scripts/02/02b_postgres_basic_permissions.sql | $CONTAINERCMD exec -it -u postgres Postgres psql
 ```
 
 ## postgres table inheritance
@@ -15,6 +15,6 @@ cat ~student/DatabaseSecurity/scripts/02/02b_postgres_basic_permissions.sql | $C
 Postgres knows the principle of table inheritance, an example can be found in following script:
 [](https://github.com/Woberegger/DatabaseSecurity/blob/main/scripts/02/02c_postgres_table_inheritance.sql)
 ```bash
-cat ~student/DatabaseSecurity/scripts/02/02c_postgres_table_inheritance.sql | $CONTAINERCMD exec -it -u postgres Postgres psql -d ims
+cat ~student/DatabaseSecurity/scripts/02/02c_postgres_table_inheritance.sql | $CONTAINERCMD exec -it -u postgres Postgres psql
 docker exec -it -u postgres Postgres psql
 ```

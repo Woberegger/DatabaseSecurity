@@ -4,12 +4,18 @@ all actions on OpenStack platform as superuser
 ```bash
 sudo -s
 # start mongodb container
-docker start mongodb
+$CONTAINERCMD start mongodb
 ```
 
 we need to install the php driver for mongodb, this is ~200-300MB and takes few minutes
+a) version for Debian-based systems:
 ```bash
 apt install -y php-pear php-dev composer
+```
+
+b) version for RedHat-based systems:
+```bash
+yum install -y php-pear php-dev composer
 ```
 
 the questions during install can be left as the defaults

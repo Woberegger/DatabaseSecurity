@@ -4,9 +4,9 @@ take care, that we all use the same IP range
 
 ```bash
 NETWORK_NAME=pgcluster
-docker network create -d bridge --gateway=10.0.2.1 --subnet=10.0.2.0/24 ${NETWORK_NAME}
+$CONTAINERCMD network create -d bridge --gateway=10.0.2.1 --subnet=10.0.2.0/24 ${NETWORK_NAME}
 ```
-Docker Compose setup for a PostgreSQL cluster with 1 primary and 2 replicas, using streaming replication
+Docker/Podman Compose setup for a PostgreSQL cluster with 1 primary and 2 replicas, using streaming replication
 with following directory Structure:
 >docker_cluster/<br>
 >├── docker-compose.yml<br>
@@ -39,65 +39,65 @@ ln -s docker-compose-nofailover.yaml docker-compose.yaml
 
 build all 3, but first only start the primary container from docker-compose.yml
 ```bash
-docker-compose up -d primary
+$CONTAINERCMD-compose up -d primary
 ```
 
 we cannot do the following in Dockerfile, only after DB was once initialized
 ```bash
-docker cp primary/pg_hba.conf pg-primary:/var/lib/postgresql/data/pg_hba.conf
+$CONTAINERCMD cp primary/pg_hba.conf pg-primary:/var/lib/postgresql/data/pg_hba.conf
 ```
 
 restart DB in order to get this new pg_hba.conf active
 ```bash
-docker stop pg-primary
-docker start pg-primary
+$CONTAINERCMD stop pg-primary
+$CONTAINERCMD start pg-primary
 ```
 
 and only now try to start the replicas
 ```bash
-docker-compose up -d replica1
-docker-compose up -d replica2
+$CONTAINERCMD-compose up -d replica1
+$CONTAINERCMD-compose up -d replica2
 ```
 
 in case your containers do not start up, you can debug them by starting only bash as entrypoint, e.g. for replica1
 ```bash
-docker-compose run --entrypoint /bin/bash replica1
+$CONTAINERCMD-compose run --entrypoint /bin/bash replica1
 ```
 
 Wait a few seconds, then check replication
 ```bash
 sleep 5
-docker exec -it pg-primary psql -U replica -c "SELECT * FROM pg_stat_replication;"
+$CONTAINERCMD exec -it pg-primary psql -U replica -c "SELECT * FROM pg_stat_replication;"
 ```
 
 expected result: *You should see 2 replicas connected*
 
 and then check the repmgr nodes (only works: when repmgr is installed according to outcommented lines in script init_primary.sh)
 ```bash
-docker exec -it pg-primary psql -U postgres -d replica -c "SELECT * FROM repmgr.nodes;"
+$CONTAINERCMD exec -it pg-primary psql -U postgres -d replica -c "SELECT * FROM repmgr.nodes;"
 ```
  
 and then check the content of the tables:
 1. against the primary node
 ```bash
-docker exec -it pg-primary psql -U replica -d replica -c "SELECT * FROM repSchema.repTable;"
+$CONTAINERCMD exec -it pg-primary psql -U replica -d replica -c "SELECT * FROM repSchema.repTable;"
 ```
 
 2. against the replica, which should have created a backup upon creation
 ```bash
-docker exec -it pg-replica1 psql -U replica -d replica -c "SELECT * FROM repSchema.repTable;"
+$CONTAINERCMD exec -it pg-replica1 psql -U replica -d replica -c "SELECT * FROM repSchema.repTable;"
 ```
 
 ## restarting lecture from scratch
 
 **ONLY when you want to start from scratch, do the following 3 steps:**
 ```bash
-docker-compose down
-docker volume rm docker_cluster_primary-data docker_cluster_replica1-data docker_cluster_replica2-data
-docker image rm docker_cluster-primary docker_cluster-replica1 docker_cluster-replica2
+$CONTAINERCMD-compose down
+$CONTAINERCMD volume rm docker_cluster_primary-data docker_cluster_replica1-data docker_cluster_replica2-data
+$CONTAINERCMD image rm docker_cluster-primary docker_cluster-replica1 docker_cluster-replica2
 ```
 
 **ONLY in case that you have corrupted e.g. replica1, then call:**
 ```bash
-docker-compose down -r replica1
+$CONTAINERCMD-compose down -r replica1
 ```

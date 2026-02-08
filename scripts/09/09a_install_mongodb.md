@@ -2,7 +2,9 @@
 
 for compatibility see [](https://www.mongodb.com/resources/products/compatibilities/docker)
 
-Take care for enough disk space - docker image is approx. 1.3 GB big
+Take care for enough disk space - docker/podman image is approx. 1.3 GB big<br>
+chose the one from docker.io to download
+
 ```bash
 $CONTAINERCMD pull mongodb/mongodb-community-server
 ```

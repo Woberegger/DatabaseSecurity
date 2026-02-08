@@ -1,24 +1,24 @@
 # DBSec03 - audit trigger
 
-## installiere und aktiviere Trigger
+## install and activate trigger
 
-shell script, über das der audit trigger runtergeladen, in den docker container reinkopiert
-und im container ausgeführt wird.
+script to download the audit trigger, copy it into the running docker container<br>
+and execute it there to install it into the Postgres database
 
 ```bash
 sudo -s 
 cd /tmp
 git clone https://github.com/2ndQuadrant/audit-trigger
-docker cp audit-trigger/audit.sql Postgres:/tmp/
+$CONTAINERCMD cp audit-trigger/audit.sql Postgres:/tmp/
 # IMPORTANT: set -d parameter to switch to the correct database, where the audit schema shall be installed
-docker exec -it -u postgres Postgres psql -d dvdrental -f /tmp/audit.sql
+$CONTAINERCMD exec -it -u postgres Postgres psql -d dvdrental -f /tmp/audit.sql
 ```
 
-## verwende Trigger
+## use audit trigger
 
-Verwendung des Audit-Triggers über folgendes SQL-Script, das entweder in pgadmin
-oder in docker container aufzurufen ist:
+the use do the audit trigger can be shown via the following script, which you can either call in GUI like `pgadmin`<br>
+or in `psql` command line with following syntax:
 ```bash
-docker exec -it -u postgres Postgres psql
+cat ~student/DatabaseSecurity/scripts/03/03b_use_audit_trigger.sql | $CONTAINERCMD exec -it -u postgres Postgres psql
 ```
 [](https://github.com/Woberegger/DatabaseSecurity/blob/main/scripts/03/03b_use_audit_trigger.sql)

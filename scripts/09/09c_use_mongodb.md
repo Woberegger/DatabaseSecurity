@@ -8,12 +8,12 @@ the ';' is used to terminate statements within one line, at the end of the line 
 
 - Variant a) directly use mongosh with docker exec command
 ```bash
-docker exec -it -u root mongodb mongosh mongodb://admin:my-secret-pw@mongodb:27017
+$CONTAINERCMD exec -it -u root mongodb mongosh mongodb://admin:my-secret-pw@mongodb:27017
 ```
 - Variant b) first with bash and then mongosh
 ```bash
-docker exec -it -u root mongodb /bin/bash
-# and inside the docker container try mongosh CLI for mongodb to show, which databases there exist
+$CONTAINERCMD exec -it -u root mongodb /bin/bash
+# and inside the docker/podman container try mongosh CLI for mongodb to show, which databases there exist
 mongosh --username admin --password my-secret-pw --eval "show dbs;"
 ```
 

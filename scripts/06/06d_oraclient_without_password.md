@@ -1,10 +1,10 @@
 # DBSec06 - OracleNet with TLS encryption - passwordless login
 
-*all actions executed as user "oraclient" in the database docker container*
+*all actions executed as user "oraclient" in the database docker/podman container*
 
 here we want to configure our client to allow passwordless login by storing password in wallet
 ```bash
-docker exec -it -u oraclient OracleFree /bin/bash
+$CONTAINERCMD exec -it -u oraclient OracleFree /bin/bash
 WALLET_DIR=$HOME/wallet
 WALLETPWD=WalletPasswd123
 # assume, that entry "IMS" exists in local tnsnames.ora

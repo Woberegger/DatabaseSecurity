@@ -4,12 +4,12 @@ all actions on OpenStack platform as superuser
 ```bash
 sudo -s
 # start mongodb container
-docker start mongodb
+$CONTAINERCMD start mongodb
 ```
 
 verify, if port 27017 is exposed externally
 ```
-docker ps | grep mongodb | grep 27017
+$CONTAINERCMD ps | grep mongodb | grep 27017
 ```
 expected output should be similar to following one:
 >2b151104eeb3   mongodb/mongodb-community-server:latest   "python3 /usr/local/…"   7 weeks ago    Up 9 minutes   0.0.0.0:27017->27017/tcp, :::27017->27017/tcp      mongodb

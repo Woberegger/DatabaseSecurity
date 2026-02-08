@@ -1,8 +1,8 @@
 # DBSec08 - Postgres clone DB with pgdump
 
-execute the following commands inside of your Postgres docker container
+execute the following commands inside of your Postgres docker/podman container
 ```bash
-docker exec -it -u postgres Postgres /bin/bash
+$CONTAINERCMD exec -it -u postgres Postgres /bin/bash
 ```
 
 set variables inside of docker container
