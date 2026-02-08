@@ -1,25 +1,26 @@
 # DBSec01 - install pgadmin
 
-Installiere pgadmin (Administrationsoberfläche als Web-GUI für postgres) ebenfalls als Docker container
+Install pgadmin (administration tool for Postgres as Web-GUI), also as docker container
 ```bash
 $CONTAINERCMD pull dpage/pgadmin4
-# verwende das zuvor für Postgres konfigurierte Netzwerk
+# use the same network, as we configured for our Postgres database, so that the containers may communicate to each other
 export NETWORK=my-docker-network
-# hier Eure Email und ein Passwort nach Eurem Geschmack setzen, das dient für das Login in die pgAdmin Weboberfläche
-# wichtig: Als gemappten Port einen > 1024 verwenden
+# pls set email and self-chosen password, which you use to login to pgadmin web GUI 
+# IMPORTANT: you have to use a mapped port > 1024
 $CONTAINERCMD run -p 5050:80 --name pgadmin4 --network ${NETWORK} \
     -e 'PGADMIN_DEFAULT_EMAIL=w.oberegger@gmx.at' \
     -e 'PGADMIN_DEFAULT_PASSWORD=SuperSecret' \
     -d dpage/pgadmin4
 ```
 
-Nach dem Hochstarten mit folgendem Befehl abfragen, welche IPs vergeben wurden
+After having started the container, check the used IP addresses with following tool<br>
+(as you will need them in pgadmin to connect to the Postgres container)
 ```bash
 $CONTAINERCMD network inspect my-docker-network
 ```
 
-damit man in pgadmin the psql shell commandos verwenden kann (was in Produktivsystem ein Security-Risiko in der Webversion wäre)
-ist folgendes zu machen:
+in order to use `psql` shell commands (what in a productive system would be a security risk, but is comfortable in our lab sessions)<br>
+you have to do the following (by transfering the config file from container to host, modify it, then transfer it back and restart the container):
 ```bash
 $CONTAINERCMD cp pgadmin4:/pgadmin4/config.py .
 sed -i 's/ENABLE_PSQL = False/ENABLE_PSQL = True/' config.py
@@ -28,10 +29,10 @@ $CONTAINERCMD stop pgadmin4
 $CONTAINERCMD start pgadmin4
 ```
 
-in pgAdmin auf der Webseite [](http://<ip-of-OpenStackVM>:5050) für die Serververbindung diejenige IP als Verbindung zur Datenbank konfigurieren,
-die bei obigem "$CONTAINERCMD network inspect" für den Container "Postgres" angezeigt wird, also z.B. 172.20.160.2
+in pgAdmin on web GUI [](http://<ip-of-OpenStackVM>:5050) you have to configure the server connection with that IP,<br>
+which the previous `$CONTAINERCMD network inspect` call has returned for the container named "Postgres", so e.g. 172.20.160.2
 
-später, wenn der Container runtergefahren wurde, wie folgt vorgehen zum Wiederhochfahren und Einloggen
+later, when the `pgadmin` container was stopped, you can simply start it again using following call:
 ```bash
 $CONTAINERCMD start pgadmin4
 ```

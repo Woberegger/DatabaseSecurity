@@ -1,44 +1,47 @@
 # DBSec01 - prepare WSL
 
-## Anleitung, um ein frisches wsl (Windows Subsystem for Linux) vorzubereiten
+## Instructions to prepare a fresh WSL (Windows Subsystem for Linux)
 
-Das geht schneller und einfacher als mit virtueller Maschine (VmWare, VirtualBox etc.)
+This is faster and easier than using a virtual machine (VMWare, VirtualBox etc.)
 
-Wir verwenden eine neue, frische Distro, damit eine ev. bereits installierte Distribution nicht beeinflusst wird
-siehe z.B. Anleitung unter [](https://superuser.com/questions/1515246/how-to-add-second-wsl2-ubuntu-distro-fresh-install)
+We use a new, fresh distro so that any already installed distribution is not affected.
+See e.g. the instructions at [](https://superuser.com/questions/1515246/how-to-add-second-wsl2-ubuntu-distro-fresh-install)
 
-1. Download eines Tar-Archives, z.B. für Distro 24-04 (da dieses Image "systemd" inkludiert) von [](https://cloud-images.ubuntu.com/wsl/noble/current/ubuntu-noble-wsl-amd64-ubuntu.rootfs.tar.gz)
+1. Download a tar archive, e.g. for Distro 24.04 (because this image includes `systemd`) from [](https://cloud-images.ubuntu.com/wsl/noble/current/ubuntu-noble-wsl-amd64-ubuntu.rootfs.tar.gz)
 
-2. Falls noch nie verwendet, bitte zuerst wsl aktivieren (in cmd.exe oder Powershell, jeweils als Administrator)
+2. If never used before, first enable WSL (in `cmd.exe` or PowerShell, each as Administrator)
 ```PowerShell
 dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
 dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
 wsl --set-default-version 2
 ```
-**!WICHTIG!**
-Es kann nötig sein, Windows neu zu starten, v.a. nach Fehlermeldung, dass wsl.exe die Parameter nicht findet !!!
+**IMPORTANT**
+It may be necessary to restart Windows, especially after an error message that `wsl.exe` cannot find the parameters!!!
 
-danach eine Distribution installieren.
+Then install a distribution.
 ```PowerShell
 wsl --install -d Ubuntu-24.04
 ```
 
-Bei folgender oder ähnlicher Fehlermeldung "WslRegisterDistribution failed with error: 0x800701bc" den Befehl
+If you encounter the following or a similar error
+> WslRegisterDistribution failed with error: 0x800701bc
+
+then run
+
 ```PowerShell
 wsl --update
 ```
-ausführen.
- 
-die weiteren Schritte können übersprungen werden, es gibt ja bereits eine aktive Distro
 
-3. Installieren und Aktivieren dieser Distro in cmd.exe oder Powershell
-   (Annahme: dass der Download der Datei .\ubuntu-noble-wsl-amd64-ubuntu.rootfs.tar.gz nach %USERPROFILE%\Downloads gemacht wurde)
+The following steps can be skipped if there is already an active distro.
+
+3. Install and register this distro in `cmd.exe` or PowerShell
+   (Assumption: the downloaded file `.\ubuntu-noble-wsl-amd64-ubuntu.rootfs.tar.gz` was saved to `\%USERPROFILE%\Downloads`)
 
 ```PowerShell
-cd %USERPROFILE%\Downloads
-wsl.exe --import Ubuntu-24.04 %USERPROFILE%\AppData\Local\Packages\Ubuntu-24.04 .\ubuntu-noble-wsl-amd64-ubuntu.rootfs.tar.gz # .\ubuntu-mantic-wsl-amd64-wsl.rootfs.tar.gz
+cd `\%USERPROFILE%\Downloads
+wsl.exe --import Ubuntu-24.04 `\%USERPROFILE%\AppData\Local\Packages\Ubuntu-24.04 .\ubuntu-noble-wsl-amd64-ubuntu.rootfs.tar.gz # .\ubuntu-mantic-wsl-amd64-wsl.rootfs.tar.gz
 ```
-Optionales Setzen dieser Distro als Default, dann muss man nicht immer explizit "wsl -d" ausführen, sondern braucht nur "bash" ausführen
+Optional: set this distro as default, then you don't have to always run `wsl -d` explicitly — you can just run `bash`
 ```PowerShell
 wsl --setdefault Ubuntu-24.04
 wsl -d Ubuntu-24.04

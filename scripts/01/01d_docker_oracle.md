@@ -1,23 +1,23 @@
 # DbSec01 - install oracle
 
-Oracle container download und erster Test, indem wir uns die User anzeigen lassen:
-Man kann podman oder docker verwenden, um die Container zu betreiben
-siehe [Oracle docker download info]( https://container-registry.oracle.com/ords/f?p=113:4:106648115637034:::4:P4_REPOSITORY,AI_REPOSITORY,AI_REPOSITORY_NAME,P4_REPOSITORY_NAME,P4_EULA_ID,P4_BUSINESS_AREA_ID:1863,1863,Oracle%20Database%20Free,Oracle%20Database%20Free,1,0&cs=3vh3v7Bx-M1AhcZcni5BZw08qK4bc49cPe_X8TG5ZkK6Z8YJb6F_7s-kOEqsi9ahcAJrOaMTAC5QDMo1FbyMgWA)
+Oracle container download and initial test by listing the users:
+You can use podman or docker to run the containers.
+See [Oracle docker download info]( https://container-registry.oracle.com/ords/f?p=113:4:106648115637034:::4:P4_REPOSITORY,AI_REPOSITORY,AI_REPOSITORY_NAME,P4_REPOSITORY_NAME,P4_EULA_ID,P4_BUSINESS_AREA_ID:1863,1863,Oracle%20Database%20Free,Oracle%20Database%20Free,1,0&cs=3vh3v7Bx-M1AhcZcni5BZw08qK4bc49cPe_X8TG5ZkK6Z8YJb6F_7s-kOEqsi9ahcAJrOaMTAC5QDMo1FbyMgWA)
 
-Das Image ist ca. 14 GB gross, d.h. bitte auf ausreichend Speicher prüfen
+The image is about 14 GB, so please check for sufficient disk space
 ```bash
 $CONTAINERCMD pull container-registry.oracle.com/database/free:latest
 export DOCKER_CONTAINERNAME=OracleFree
 export NETWORK=my-docker-network
-# damit der listener-Port 1521 von extern zugreifbar ist, muss dieser über "p xxx:xxx" freigegeben werden
+# to make the listener port 1521 reachable from the host, expose it with "-p xxx:xxx"
 $CONTAINERCMD run -d --name $DOCKER_CONTAINERNAME --network ${NETWORK} -p 1521:1521 -p 2484:2484 --log-opt max-size=100m container-registry.oracle.com/database/free:latest
 sleep 5 # give DB some time to startup (when "ORA-01109: database not open" pops up, then try again
 $CONTAINERCMD exec $DOCKER_CONTAINERNAME ./setPassword.sh FhIms9999
 ```
 
-verbinde mit der Datenbank mit sqlplus innerhalb des Containers und zeige an, welche pdbs und welche user es gibt
-über --tty=false kann man eine Kommandosequenz als Here-Document übergeben
-das "-s" bei sqlplus gibt keinen SQL-Prompt und zeigt keinen SQL-Startscreen, ist daher bei nicht-interaktiven Kommandos anzuraten, sonst aber nicht
+connect to the database with sqlplus inside the container and show which pdbs and which users exist
+you can pass a command sequence as a here-document using `--tty=false`
+the `-s` for sqlplus disables the SQL prompt and the startup screen, so it is recommended for non-interactive commands, otherwise not
 ```bash
 export DOCKER_CONTAINERNAME=OracleFree
 $CONTAINERCMD exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
@@ -34,7 +34,7 @@ $CONTAINERCMD exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <
 !
 ```
 
-wenn aus irgendwelchen Gründen die Archive logfiles schon angelegt wurden und viel Platz belegen, dann führe folgendes aus:
+if for some reason the archive logfiles were already created and occupy a lot of space, run:
 ```bash
 export DOCKER_CONTAINERNAME=OracleFree
 $CONTAINERCMD exec -i --tty=false $DOCKER_CONTAINERNAME /bin/bash <<!
@@ -42,12 +42,12 @@ $CONTAINERCMD exec -i --tty=false $DOCKER_CONTAINERNAME /bin/bash <<!
 !
 ```
 
-zeige letzte Ausgaben des Oracle Alert-Logs
+show last outputs of the Oracle alert log
 ```bash
 $CONTAINERCMD logs $DOCKER_CONTAINERNAME
 ```
 
-da hier die Logfiles sehr gross werden können (und sogar allen Speicher auffressen), empfiehlt sich logrotate
+since the logfiles can become very large (and even fill all storage), using logrotate is recommended
 (TODO: this works with docker only, but not with podman)
 ```bash
 LogPath=$(dirname $($CONTAINERCMD inspect --format='{{.LogPath}}' OracleFree))
@@ -66,24 +66,24 @@ ${LogPath}/*.log {
 logrotate -f /etc/logrotate.d/docker-oracle-logs
 ```
 
-jetzt legen wir eine eigene Pluggable DB an als Kopie der Default-DB "FREEPDB1"
+now create a new pluggable database as a copy of the default DB `FREEPDB1`
 ```bash
 export DOCKER_CONTAINERNAME=OracleFree
 $CONTAINERCMD exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
    SET lines 300 pages 0;
-   -- Zeige die Struktur der Files an, damit wir das dann im File_Name_Convert analog dazu anlegen
+   -- Show the structure of the files so we can create the File_Name_Convert accordingly
    SELECT FILE_NAME FROM dba_data_files;
    CREATE Pluggable Database IMS FROM FREEPDB1 FILE_NAME_CONVERT=('/opt/oracle/oradata/FREE/FREEPDB1/','/opt/oracle/oradata/FREE/IMS/');
-   -- Wechsle in den existierenden Container
+   -- Switch into the existing container
    ALTER Pluggable Database IMS OPEN;
-   -- take care, that container automatically starts up the next time
+   -- ensure the container automatically starts up next time
    ALTER Pluggable Database IMS save state;
    ALTER session SET container=IMS;
    SELECT FILE_NAME FROM dba_data_files;
 !
 ```
 
-wir müssen einen tns-Alias für die neue DB anlegen, damit wir mit user/pwd@PluggableDB uns anmelden können
+we must create a tns alias for the new DB so we can connect with `user/pwd@PluggableDB`
 ```bash
 export DOCKER_CONTAINERNAME=OracleFree
 $CONTAINERCMD exec -it $DOCKER_CONTAINERNAME /bin/bash
@@ -102,12 +102,12 @@ IMS =
 !
 exit # exit from docker container
 ```
-  
-damit wir später saubere Trennung haben, legen wir eigenen Tablespace für Daten und Indizes an
+
+to keep separation later, create separate tablespaces for data and indexes
 ```bash
 export DOCKER_CONTAINERNAME=OracleFree
 $CONTAINERCMD exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
-   -- WICHTIG: bei den meisten unserer Test-Anwendungen müssen wir in die jeweilige PDB wechseln, also das "ALTER SESSION" nicht vergessen!!!
+   -- IMPORTANT: for most of our test applications we need to switch into the respective PDB, so don't forget the "ALTER SESSION"!!!
    ALTER session SET container=IMS;
    CREATE TABLESPACE data DATAFILE '/opt/oracle/oradata/FREE/IMS/data.dbf' SIZE 16m AUTOEXTEND ON;
    CREATE TABLESPACE indexes DATAFILE '/opt/oracle/oradata/FREE/IMS/indexes.dbf' SIZE 8m AUTOEXTEND ON;
@@ -116,12 +116,12 @@ $CONTAINERCMD exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <
 !
 ```
 
-und dann legen wir noch einen Applikationsuser in unserer PDB an, unter dem dann die Tabellen installiert werden
+then create an application user in our PDB under which the tables will be installed
 ```bash
 export DOCKER_CONTAINERNAME=OracleFree
 $CONTAINERCMD exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
    ALTER session SET container=IMS;
-   -- zuvor legen wir noch eine Rolle an, damit wir die dann dem User geben, bei einem weiteren User können wir dieselbe Rolle weiterverwenden
+   -- first create a role so we can grant it to the user; for additional users the same role can be reused
    CREATE Role Application;
    CREATE USER Ims IDENTIFIED BY FhIms9999 DEFAULT TABLESPACE DATA TEMPORARY TABLESPACE TEMP;
    GRANT CONNECT, RESOURCE, CREATE TABLE, CREATE PROCEDURE, CREATE VIEW, CREATE DATABASE LINK, CREATE SYNONYM, CREATE ANY DIRECTORY TO Application;
@@ -129,17 +129,17 @@ $CONTAINERCMD exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <
 !
 ```
 
-und dann verbinden wir uns testweise mit dem neu angelegten User, der sollte zumindest ein paar Systemtabellen finden, eigene gibt es noch keine
+then connect for a quick test with the newly created user; it should at least find some system tables, no user tables yet
 ```bash
 export DOCKER_CONTAINERNAME=OracleFree
 $CONTAINERCMD exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s ims/FhIms9999@IMS <<!
    SELECT Table_Name FROM All_Tables WHERE RowNum<=10;
-   prompt hier wird erwarteterweise noch nichts gefunden
+   prompt here nothing is expected to be found yet
    SELECT * FROM cat;
 !
 ```
 
-wenn man später die Pluggable DB droppen und neu anlegen will, muss man wie folgt vorgehen (**Statements auskommentiert**)
+if you later want to drop and recreate the pluggable DB, do as follows (**statements commented out**)
 ```bash
 #export DOCKER_CONTAINERNAME=OracleFree
 #   $CONTAINERCMD exec -i --tty=false $DOCKER_CONTAINERNAME sqlplus -s / as sysdba <<!
@@ -149,14 +149,14 @@ wenn man später die Pluggable DB droppen und neu anlegen will, muss man wie fol
 #!
 ```
 
-später, wenn der Container runtergefahren wurde, wie folgt vorgehen zum Wiederhochfahren und Einloggen
+later, when the container was shut down, restart and login as follows
 ```bash
 $CONTAINERCMD start OracleFree
 $CONTAINERCMD exec -it OracleFree sqlplus / as sysdba
 ```
 
-optional kann man instantclient installieren und damit sqlplus von ausserhalb verwenden, ist aber nicht nötig (**Statements auskommentiert**).
-Download von [Oracle Install Client download page](https://www.oracle.com/de/database/technologies/instant-client/linux-x86-64-downloads.html)
+optionally you can install the instantclient and use sqlplus from outside, but it is not necessary (**statements commented out**).
+Download from [Oracle Install Client download page](https://www.oracle.com/de/database/technologies/instant-client/linux-x86-64-downloads.html)
 ```bash
 # cd /usr/local
 # mkdir instantclient

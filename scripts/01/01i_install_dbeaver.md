@@ -1,7 +1,7 @@
 # DBSec01 - install dbeaver
 
-Installiere dbeaver (einfache Abfrageoberfläche als Web-GUI für diverse Datenbanken) ebenfalls als Docker container
-siehe [DBeaver-Docker-Howto](https://github.com/dbeaver/cloudbeaver/wiki/Run-Docker-Container) how to configure and start container
+install `dbeaver`, a simply SQL query tools as Web GUI for various databases (also as docker/podman container)<br>
+see [DBeaver-Docker-Howto](https://github.com/dbeaver/cloudbeaver/wiki/Run-Docker-Container) how to configure and start container
 ```bash
 $CONTAINERCMD pull dbeaver/cloudbeaver
 export NETWORK=my-docker-network
