@@ -47,10 +47,17 @@ show last outputs of the Oracle alert log
 $CONTAINERCMD logs $DOCKER_CONTAINERNAME
 ```
 
-since the logfiles can become very large (and even fill all storage), using logrotate is recommended
-(TODO: this works with docker only, but not with podman)
+since the logfiles can become very large (and even fill all storage), using logrotate is recommended (when logging into container's file system)
+(this `logrotate` works with docker only, but not with podman in the usual setup, as this uses `journald` per default, as you can see from following command):
+
+a) for podman:
 ```bash
-LogPath=$(dirname $($CONTAINERCMD inspect --format='{{.LogPath}}' OracleFree))
+podman info --format '{{.Host.LogDriver}}'
+```
+
+b) for docker only:
+```bash
+LogPath=$(dirname $(docker inspect --format='{{.LogPath}}' OracleFree))
 
 cat >/etc/logrotate.d/docker-oracle-logs <<!
 ${LogPath}/*.log {
@@ -169,4 +176,29 @@ Download from [Oracle Install Client download page](https://www.oracle.com/de/da
 # export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/instantclient/instantclient_23_26
 # Test call
 # sqlplus sys@localhost:1521/FREEPDB1 as sysdba
+```
+
+## Troubleshoot Oracle not starting up
+
+### too few shared memory available (e.g. after having cloned the VM)
+
+if following error is logged when trying to call "startup" at SQL-Prompt:
+> ORA-27104: system-defined limits for shared memory was misconfigured
+
+then login in to container and adapt the limits in an Pfile:
+```bash
+$CONTAINERCMD exec -it $DOCKER_CONTAINERNAME bash
+# you should see, that you are connected to an idle instance, when calling sqlplus
+sqlplus '/ as sysdba';
+CREATE PFILE='/tmp/init_temp.ora' FROM SPFILE;
+quit;
+# then manually edit /tmp/init_temp.ora values for "sga_target" to 1200M (use `vim`)
+# and call sqlplus again and try to restart DB:
+sqlplus '/ as sysdba' <<!
+   STARTUP PFILE='/tmp/init_temp.ora';
+!
+# if this works, then make it permanently
+sqlplus '/ as sysdba' <<!
+CREATE SPFILE FROM PFILE='/tmp/init_temp.ora';
+!
 ```

@@ -19,6 +19,6 @@ $CONTAINERCMD exec -it -u postgres Postgres psql -d dvdrental -f /tmp/audit.sql
 the use do the audit trigger can be shown via the following script, which you can either call in GUI like `pgadmin`<br>
 or in `psql` command line with following syntax:
 ```bash
-cat ~student/DatabaseSecurity/scripts/03/03b_use_audit_trigger.sql | $CONTAINERCMD exec -it -u postgres Postgres psql
+cat ~student/DatabaseSecurity/scripts/03/03b_use_audit_trigger.sql | $CONTAINERCMD exec -i --tty=false -u postgres Postgres psql -d dvdrental 
 ```
 [](https://github.com/Woberegger/DatabaseSecurity/blob/main/scripts/03/03b_use_audit_trigger.sql)
