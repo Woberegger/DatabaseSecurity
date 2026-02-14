@@ -20,5 +20,5 @@ sqlplus /@IMS <<!
 ```
 
 *if we want to configure a 2nd DB user for passwordless login, then we need a 2nd tnsnames.ora record, e.g. named IMS2<br>
-(otherwise Oracle will not know, which user to use, as even the iuser name is omitted in the "sqlplus" command line)<br>
+(otherwise Oracle will not know, which user to use, as even the user name is omitted in the "sqlplus" command line)<br>
 #mkstore -wrl $HOME/wallet -createCredential IMS2 <OtherDbUser> <OtherDBPassword>*
