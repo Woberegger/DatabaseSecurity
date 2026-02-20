@@ -33,7 +33,7 @@ $CONTAINERCMD exec -i --tty=false -u postgres ${DOCKER_CONTAINERNAME} psql <<!
 !
 ```
 
-later, when container was shut down, you can use the following to start aagain and re-login to the container:
+later, when container was shut down, you can use the following to start again and re-login to the container:
 (in that case we use `-it` to get an interactive terminal
 
 ```bash
