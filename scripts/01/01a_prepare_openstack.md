@@ -26,7 +26,7 @@ yum -y install vim
 yum -y install net-tools
 yum -y install git
 yum -y install wireshark
-yum -y install gpg # needed for apt keys to add
+yum -y install gpg # needed for keyrings for package manager
 ```
 
 in order to already prepare the git environment, we create the user before cloning
