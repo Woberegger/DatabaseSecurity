@@ -39,3 +39,13 @@ SELECT * FROM Cities;
 SET Role Postgres;
 ALTER TABLE Cities ADD Major Text;
 SELECT * FROM Capitals;
+-- and now create a different derived table with a sensitive column "Taxes", containing the taxes, which this town has collected last year
+-- create the derived table with special permissions
+CREATE TABLE IF NOT EXISTS CitiesWithTaxes (
+   tax real NOT NULL
+) INHERITS(CITIES) tablespace pg_default;
+
+INSERT INTO CitiesWithTaxes (name, elevation, tax) VALUES ('Dubai', 0, 100000000);
+SELECT * FROM Citites;
+-- we do not grant that table to user 'scott', as this is sensitive information
+SELECT * FROM CititesWithTaxes;
