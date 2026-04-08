@@ -47,6 +47,11 @@ else
 fi
 ```
 
+copy the SQL-injection test file to our webserver directory
+```bash
+cp ~student/DatabaseSecurity/scripts/04/test_sql_inj.php /var/www/html/
+```
+
 after having tested SQL injection by calling [](http://<IP-Addr>/test_sql_inj.php?id=6%20OR%201=1)
 check the modsecurity log files about the detected security violation:
 
@@ -60,6 +65,11 @@ fi
 
 if later you want to disable modsecurity again (which might make sense in next lessons), you can call the following
 ```bash
-a2dismod security2
-systemctl restart apache2
+if [ -f /etc/redhat-release ]; then
+   yum remove -y mod_security
+   systemctl restart httpd
+else
+   a2dismod security2
+   systemctl restart apache2
+fi
 ```
