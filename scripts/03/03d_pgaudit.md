@@ -4,14 +4,14 @@ install package for pgaudit into the Postgres container
 ```bash
 $CONTAINERCMD exec -i --tty=false -u root Postgres /bin/bash <<!
    apt update -y
-   apt install -y postgresql-17-pgaudit
+   apt install -y postgresql-18-pgaudit
 !
 ```
 
 as OS-user postgres modify some settings to enable pgaudit in config file
 ```bash
 $CONTAINERCMD exec -i --tty=false -u postgres Postgres /bin/bash <<!
-   cd /var/lib/postgresql/data
+   cd /var/lib/postgresql/18/docker
    # save the old config file, if we should need to rollback to that one
    cp -p postgresql.conf postgresql.conf.without_pgaudit
    sed -i "s/#shared_preload_libraries = ''/shared_preload_libraries = 'pgaudit'/" postgresql.conf
@@ -24,7 +24,7 @@ $CONTAINERCMD exec -i --tty=false -u postgres Postgres /bin/bash <<!
 and now some new variables for pgaudit, which are not existing yet in config file
 ```bash
 $CONTAINERCMD exec -i --tty=false -u postgres Postgres /bin/bash <<!
-   cat >>/var/lib/postgresql/data/postgresql.conf <<EOF
+   cat >>/var/lib/postgresql/18/docker/postgresql.conf <<EOF
       pgaudit.log_catalog='on'
       # Specify the verbosity of log information (INFO, NOTICE, LOG, WARNING,DEBUG)
       pgaudit.log_level='log'
@@ -45,22 +45,22 @@ $CONTAINERCMD start Postgres
 create pgaudit extension in our test DB and configure read/ddl actions to log
 ```bash
 $CONTAINERCMD exec -i --tty=false -u postgres Postgres psql <<!
-   \c dvdrental
+   \c ims
    CREATE EXTENSION pgaudit;
-   ALTER DATABASE dvdrental SET pgaudit.log = 'read,ddl';
+   ALTER DATABASE ims SET pgaudit.log = 'read,ddl';
 !
 ```
 
 and now as user objectowner create a dummy table and check, if auditing logs this
 ```bash
-$CONTAINERCMD exec -i --tty=false -u postgres Postgres psql -d dvdrental -U objectowner <<!
+$CONTAINERCMD exec -i --tty=false -u postgres Postgres psql -d ims -U objectowner <<!
    -- and now we create some dummy table to check the audit logs
-   drop table if exists dvd.dummy;
-   create table dvd.dummy (dummyint int, dummystring varchar(20));
+   drop table if exists products.dummy;
+   create table products.dummy (dummyint int, dummystring varchar(20));
    -- as we do not audit dml, the insert will not be audit-logged
-   insert into dvd.dummy values (1,'hello');
+   insert into products.dummy values (1,'hello');
    -- however the following select should be logged
-   SELECT * FROM dvd.dummy;
+   SELECT * FROM products.dummy;
 !
 ```
 the docker logging (as we have directed to stderr) should show the recent actions
@@ -68,6 +68,6 @@ depending on settings it might also be logged to /var/lib/postgresql/data/log/ d
 ```bash
 $CONTAINERCMD logs Postgres | tail -n 100
 $CONTAINERCMD exec -i --tty=false -u postgres Postgres /bin/bash <<!
-   grep -i dummy /var/lib/postgresql/data/log/postgresql*.log
+   grep -i dummy /var/lib/postgresql/18/docker/log/postgresql*.log
 !
 ```
