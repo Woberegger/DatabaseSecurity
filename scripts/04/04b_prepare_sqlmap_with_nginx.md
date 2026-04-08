@@ -5,7 +5,11 @@ I recommend to use apache, as this is easier to configure for our purposes, alth
 install and prepare nginx WebServer for use with sqlmap
 ```bash
 sudo -s
-apt-get install nginx
+if [ -f /etc/redhat-release ]; then
+   yum install -y nginx
+else
+   apt install -y nginx
+fi
 ```
 or use separate docker container (in that case configuration needs to be done in the docker container, which shall then be saved to image)
 ```bash
@@ -13,8 +17,13 @@ docker pull nginx
 ```
 install FastCGI Process Manager
 ```bash
-apt-get install php8.1-fpm
-systemctl status php8.1-fpm
+if [ -f /etc/redhat-release ]; then
+   systemctl enable --now php-fpm
+   systemctl status php-fpm
+else
+   apt install php8.1-fpm
+   systemctl status php8.1-fpm
+fi
 ```
 
 **!!! IMPORTANT !!!**
@@ -31,3 +40,5 @@ create a simple php file to show php-Information (in directory, where apache loo
 ```bash
 echo "<?php phpinfo(); ?>" > /var/www/html/info.php
 ```
+
+test the connection to the php test page with following URL: [http://\<OpenStack-IP\>/info.php](http://<OpenStack-IP>/info.php)
