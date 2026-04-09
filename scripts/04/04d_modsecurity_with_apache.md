@@ -6,27 +6,51 @@ sudo -s
 if [ -f /etc/redhat-release ]; then
    yum install -y epel-release
    yum install -y mod_security
-   # TODO: does not yet work
-   cd /etc/httpd/conf
-   wget https://github.com/coreruleset/coreruleset/archive/refs/tags/v3.3.5.tar.gz
-   tar xzvf v3.3.5.tar.gz
-   ln -s coreruleset-3.3.5 crs
-   cp crs/crs-setup.conf.example crs/crs-setup.conf
-   systemctl restart httpd
+   # on current version of Rocky Linux the package mod_security_crs does not exist anymore, so we need to do the manual installation task
+   cd /usr/share
+   git clone https://github.com/coreruleset/coreruleset.git
+   sudo mv coreruleset owasp-crs
+   mkdir -p /etc/httpd/modsecurity.d
+   # copy the example configuration to the active one
+   cp /usr/share/owasp-crs/crs-setup.conf.example /etc/httpd/modsecurity.d/crs-setup.conf
+   cat >/etc/httpd/modsecurity.d/owasp-crs.conf <<!
+   # OWASP Core Rule Set
+   IncludeOptional /usr/share/owasp-crs/rules/*.conf
+!
 else
    apt install -y libapache2-mod-security2
    a2enmod security2
-   systemctl restart apache2
 fi
 ```
 
-find the new module in same way, as we have previously enabled php
+**on RedHat systems only:** check file `/etc/httpd/modsecurity.d/crs-setup.conf` for enabled lines like the following (should be at the end of the file):
+```vim
+SecAction \
+    "id:900990,\
+    phase:1,\
+    pass,\
+    t:none,\
+    nolog,\
+    tag:'OWASP_CRS',\
+    ver:'OWASP_CRS/4.26.0-dev',\
+    setvar:tx.paranoia_level=1 \
+    setvar:tx.crs_setup_version=4250"
+```
+
+| Level | Description of paranoia_level|
+| ----- | ---------------------------- |
+| 1     | Default, low false positives |
+| 2     | Stronger attack detection    |
+| 3     | High security                |
+| 4     | Very strict / IDS-like       |
+
+
+**on RedHat systems only:** Fix SELinux Permissions (Very Important):<br>
+   Without this, ModSecurity will not log or work correctly.
 ```bash
-if [ -f /etc/redhat-release ]; then
-   httpd -M | grep security
-else
-   a2query -m | grep -E 'php|security'
-fi
+mkdir -p /var/lib/mod_security
+chown apache:apache /var/lib/mod_security
+restorecon -Rv /var/lib/mod_security
 ```
 
 activate default configuration
@@ -55,12 +79,27 @@ fi
 
 finally restart again to be on save side, that all is considered
 ```bash
+# first test, if configuration is valid
+apachectl -t
 if [ -f /etc/redhat-release ]; then
    systemctl restart httpd
 else
    systemctl restart apache2
 fi
 ```
+
+find the new security module in same way, as we have previously enabled php - output should be:
+> security2_module (shared)
+
+```bash
+if [ -f /etc/redhat-release ]; then
+   httpd -M | grep security
+else
+   a2query -m | grep -E 'php|security'
+fi
+```
+
+---
 
 after having tested SQL injection by calling [](http://<IP-Addr>/test_sql_inj.php?id=6%20OR%201=1)
 check the modsecurity log files about the detected security violation:
@@ -72,6 +111,11 @@ else
    cat /var/log/apache2/modsec_audit.log
 fi
 ```
+
+The expected output of the web browser should be:
+>**Forbidden**<br>
+>You don't have permission to access this resource.
+---
 
 if later you want to disable modsecurity again (which might make sense in next lessons), you can call the following
 ```bash
