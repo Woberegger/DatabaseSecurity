@@ -11,7 +11,7 @@ $CONTAINERCMD exec -i --tty=false -u root Postgres /bin/bash <<!
 as OS-user postgres modify some settings to enable pgaudit in config file
 ```bash
 $CONTAINERCMD exec -i --tty=false -u postgres Postgres /bin/bash <<!
-   cd /var/lib/postgresql/18/docker
+   cd \$PGDATA
    # save the old config file, if we should need to rollback to that one
    cp -p postgresql.conf postgresql.conf.without_pgaudit
    sed -i "s/#shared_preload_libraries = ''/shared_preload_libraries = 'pgaudit'/" postgresql.conf
@@ -24,7 +24,7 @@ $CONTAINERCMD exec -i --tty=false -u postgres Postgres /bin/bash <<!
 and now some new variables for pgaudit, which are not existing yet in config file
 ```bash
 $CONTAINERCMD exec -i --tty=false -u postgres Postgres /bin/bash <<!
-   cat >>/var/lib/postgresql/18/docker/postgresql.conf <<EOF
+   cat >>\$PGDATA/postgresql.conf <<EOF
       pgaudit.log_catalog='on'
       # Specify the verbosity of log information (INFO, NOTICE, LOG, WARNING,DEBUG)
       pgaudit.log_level='log'
@@ -68,6 +68,6 @@ depending on settings it might also be logged to /var/lib/postgresql/data/log/ d
 ```bash
 $CONTAINERCMD logs Postgres | tail -n 100
 $CONTAINERCMD exec -i --tty=false -u postgres Postgres /bin/bash <<!
-   grep -i dummy /var/lib/postgresql/18/docker/log/postgresql*.log
+   grep -i dummy \$PGDATA/log/postgresql*.log
 !
 ```
