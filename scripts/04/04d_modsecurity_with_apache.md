@@ -119,11 +119,13 @@ The expected output of the web browser should be:
 
 if later you want to disable modsecurity again (which might make sense in next lessons), you can call the following
 ```bash
+# better do not completely uninstall mod_security, but change `SecRuleEngine` from "On" to "DetectionOnly" or "Off"
+sed -i 's/SecRuleEngine On/SecRuleEngine DetectionOnly/' $MODSEC_CFG
 if [ -f /etc/redhat-release ]; then
-   yum remove -y mod_security
+   #yum remove -y mod_security
    systemctl restart httpd
 else
-   a2dismod security2
+   #a2dismod security2
    systemctl restart apache2
 fi
 ```
