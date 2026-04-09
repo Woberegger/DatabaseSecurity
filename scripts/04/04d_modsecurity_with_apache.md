@@ -62,11 +62,6 @@ else
 fi
 ```
 
-copy the SQL-injection test file to our webserver directory
-```bash
-cp ~student/DatabaseSecurity/scripts/04/test_sql_inj.php /var/www/html/
-```
-
 after having tested SQL injection by calling [](http://<IP-Addr>/test_sql_inj.php?id=6%20OR%201=1)
 check the modsecurity log files about the detected security violation:
 
