@@ -1,6 +1,6 @@
 <?php
-// read parameter
-$id = $_GET['id'];
+// read parameter (optonally read from command line for low-level php tests)
+$id = $_GET['id'] ?? $argv[1] ?? null;
 
 // connect and select DB (we assume, that port 5432 is exposed from docker to host)
 // optionally try different user "objectowner" and compare the results, what was exploited

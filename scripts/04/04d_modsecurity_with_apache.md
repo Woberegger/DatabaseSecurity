@@ -6,6 +6,12 @@ sudo -s
 if [ -f /etc/redhat-release ]; then
    yum install -y epel-release
    yum install -y mod_security
+   # TODO: does not yet work
+   cd /etc/httpd/conf
+   wget https://github.com/coreruleset/coreruleset/archive/refs/tags/v3.3.5.tar.gz
+   tar xzvf v3.3.5.tar.gz
+   ln -s coreruleset-3.3.5 crs
+   cp crs/crs-setup.conf.example crs/crs-setup.conf
    systemctl restart httpd
 else
    apt install -y libapache2-mod-security2
@@ -36,6 +42,15 @@ fi
 do not only detect, but even reject the SQL injection
 ```bash
 sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' $MODSEC_CFG
+```
+
+on e.g. RockyLinux SELinux is active, which per default blocks DB connects with Apache, so this shall be disabled
+```bash
+if [ -f /etc/redhat-release ]; then
+   setsebool -P httpd_can_network_connect_db 1
+   # optionally we might generally disable SELinux (also for other tests)
+   setenforce 0
+fi
 ```
 
 finally restart again to be on save side, that all is considered
@@ -73,3 +88,24 @@ else
    systemctl restart apache2
 fi
 ```
+
+## possible errors
+
+in case, that the browser shows exception like "Could not connect", then try php from command line, if this works
+```bash
+php /var/www/html/test_sql_inj.php 6
+```
+
+the expected output should look as below, when this works
+```html
+<table>
+        <tr>
+                <td>6</td>
+                <td>Jennifer</td>
+                <td>Davis</td>
+                <td>jennifer.davis@sakilacustomer.org</td>
+        </tr>
+</table>
+```
+
+so when this works, but Web page does not, then check the Httpd security settings or SELinux settings
