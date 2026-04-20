@@ -6,9 +6,9 @@ all actions executed as user "oracle" in the database docker container
 ```bash
 $CONTAINERCMD exec -it -u oracle OracleFree /bin/bash
 # set variables
-WALLET_DIR=$ORACLE_HOME/wallet
-CN=db$(hostname).localdomain
-PARTNERCN=client$(hostname).localdomain
+export WALLET_DIR=$ORACLE_HOME/wallet
+export CN=db$(hostname).localdomain
+export PARTNERCN=client$(hostname).localdomain
 WALLETPWD=WalletPasswd123
 ```
 
@@ -16,6 +16,7 @@ WALLETPWD=WalletPasswd123
 
 create server-side auto-login wallet inside of docker/podman container
 ```bash
+cd $ORACLE_HOME
 mkdir $WALLET_DIR
 orapki wallet create -wallet $WALLET_DIR -pwd $WALLETPWD -auto_login_local
 ```
@@ -42,10 +43,10 @@ change to the previously created user "oraclient" and set the wallet there
 (for simplicity we use the client on the same system, in a real-world example the client could be on a separate system)
 ```bash
 $CONTAINERCMD exec -it -u oraclient OracleFree /bin/bash
-WALLET_DIR=$HOME/wallet
+export WALLET_DIR=$HOME/wallet
 WALLETPWD=WalletPasswd123
-PARTNERCN=db$(hostname).localdomain
-CN=client$(hostname).localdomain
+export PARTNERCN=db$(hostname).localdomain
+export CN=client$(hostname).localdomain
 mkdir $WALLET_DIR
 orapki wallet create -wallet $WALLET_DIR -pwd $WALLETPWD -auto_login_local
 ```
@@ -84,9 +85,9 @@ all actions executed as user "oracle" in the database docker container
 ```bash
 $CONTAINERCMD exec -it -u oracle OracleFree /bin/bash
 # set variables
-WALLET_DIR=$ORACLE_HOME/wallet
-CN=db$(hostname).localdomain
-PARTNERCN=client$(hostname).localdomain
+export WALLET_DIR=$ORACLE_HOME/wallet
+export CN=db$(hostname).localdomain
+export PARTNERCN=client$(hostname).localdomain
 WALLETPWD=WalletPasswd123
 ```
 
@@ -99,6 +100,7 @@ orapki wallet add -wallet $WALLET_DIR -pwd $WALLETPWD -trusted_cert -cert /tmp/$
 check content of server wallet again, it now includes the client certificate as well
 ```bash
 orapki wallet display -wallet $WALLET_DIR -pwd $WALLETPWD
+exit # exit from container
 ```
 
 **IMPORTANT:**<br>
@@ -115,14 +117,15 @@ tells us, whereas the other 2 files can be copied without changes<br>
  e.g.:   (SECURITY=(SSL_SERVER_CERT_DN="CN=db365169eb3fe6.localdomain"))
 
 ```bash
-$CONTAINERCMD cp listener.ora.tls.md OracleFree:/opt/oracle/oradata/dbconfig/FREE/listener.ora
-$CONTAINERCMD cp sqlnet.ora.tls.md OracleFree:/opt/oracle/oradata/dbconfig/FREE/sqlnet.ora
-# modify tnsnames.ora.tls.md first and then
-$CONTAINERCMD cp tnsnames.ora.tls.md OracleFree:/opt/oracle/oradata/dbconfig/FREE/tnsnames.ora
+$CONTAINERCMD cp ~student/DatabaseSecurity/scripts/06/listener.ora.tls OracleFree:/opt/oracle/oradata/dbconfig/FREE/listener.ora
+$CONTAINERCMD cp ~student/DatabaseSecurity/scripts/06/sqlnet.ora.tls OracleFree:/opt/oracle/oradata/dbconfig/FREE/sqlnet.ora
+# either modify tnsnames.ora.tls first and then copy it (or change it with "vi" inside of the container)
+$CONTAINERCMD cp ~student/DatabaseSecurity/scripts/06/tnsnames.ora.tls OracleFree:/opt/oracle/oradata/dbconfig/FREE/tnsnames.ora
 ```
 
 after that restart listener (a potential error will be shown immediately)
 ```bash
+$CONTAINERCMD exec -it -u oracle OracleFree /bin/bash
 lsnrctl stop
 lsnrctl start
 ```

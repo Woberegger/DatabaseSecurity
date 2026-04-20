@@ -12,7 +12,7 @@ exit
 
 then we connect to the container with the created OS user "oraclient" and prepare the user's environment
 ```bash
-$CONTAINERCMD exec -it -u oraclient OracleFree /bin/bash
+$CONTAINERCMD exec -it -u oraclient -w /home/oraclient OracleFree /bin/bash
 mkdir ~/tnsadmin # here we store the client config, because of separate wallet
 cat >>~/.bashrc <<!
 export ORACLE_SID=FREE

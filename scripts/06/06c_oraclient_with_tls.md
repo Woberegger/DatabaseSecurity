@@ -6,11 +6,11 @@ adapt client to work with wallet
 ```bash
 $CONTAINERCMD exec -it -u oraclient OracleFree /bin/bash
 cd ~/tnsadmin
-cp /opt/oracle/product/26ai/dbhomeFree/network/admin/sqlnet.ora .
-cp /opt/oracle/product/26ai/dbhomeFree/network/admin/tnsnames.ora .
+cp /opt/oracle/oradata/dbconfig/FREE/sqlnet.ora .
+cp /opt/oracle/oradata/dbconfig/FREE/tnsnames.ora .
 ```
 
-then adapt the wallet information in ~/tnsadmin/sqlnet.ora to where the client wallet is located
+then manually adapt the wallet information in ~/tnsadmin/sqlnet.ora to where the client wallet is located
    *i.e. (DIRECTORY = /home/oraclient/wallet)*
 
 low level test call to check, if the database is reachable with those TNS settings
@@ -35,10 +35,15 @@ sqlplus ims/FhIms9999@IMS_SSL <<!
 !
 ```
 
-check with tcpdump in a 2nd session and then re-execute the command above to see encrypted output
-(if docker originally was exposing port 2484 to outer world, then this would work from OpenStack VM, otherwise tcpdump inside of docker container)<br>
-*For installing and using tcpdump inside of oracle docker container see yum_in_oracle_container.md*
+check with tcpdump from the host container
+(this is better than installing tcpdump inside of the `OracleFree` container, as this needs to install lots of additional packages, which might hang!!!)<br>
+~~For installing and using tcpdump inside of oracle container see yum_in_oracle_container.md~~
 
 ```bash
-tcpdump -i any -XX -s 1024 port 2484
+# determine PID of our container
+PID=$(podman inspect --format '{{.State.Pid}}' OracleFree)
+# then we enter the container's namespace by its PID and do the tcpdump there
+nsenter -n -t $PID tcpdump -i any -XX -s 1024 port 2484
 ```
+
+expected result is, that we should not find any plain text in our tcpdump!
