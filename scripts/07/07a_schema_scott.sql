@@ -77,4 +77,5 @@ COMMIT;
 
 SET TERMOUT ON
 SET ECHO ON
--- continue with 07b_virtual_private_db_preparations.sql to create other users and policy functions
+PROMPT continue with 07b_virtual_private_db_preparations.sql to create other users and policy functions
+QUIT

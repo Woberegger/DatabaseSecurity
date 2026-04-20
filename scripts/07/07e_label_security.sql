@@ -95,6 +95,6 @@ END;
 /
 connect scott/tiger@IMS;
 SELECT * FROM emp;
--- scott should see all data labelled as NORMAL and CONFIDENTIAL, Jones should only see records marked as "NORMAL"
+PROMPT scott should see all data labelled as NORMAL and CONFIDENTIAL, Jones should only see records marked as "NORMAL"
 
  

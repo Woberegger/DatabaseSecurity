@@ -68,6 +68,7 @@ CONNECT JONES/jones1234@IMS;
 set lines 300 pages 300;
 select * from emp ORDER BY EmpNO ASC;
 
+PROMPT Jones sees all data from his department, i.e. 5 records
 -- expected output is the following (only 5 records instead of 14)
 --     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
 ------------ ---------- --------- ---------- --------- ---------- ---------- ----------
@@ -79,12 +80,14 @@ select * from emp ORDER BY EmpNO ASC;
 
 CONNECT smith/smith1234@IMS;
 set lines 300 pages 300;
--- however scott sees all data
+--Smith only sees his own data
+PROMPT Smith sees only his own record
 select * from emp ORDER BY EmpNO ASC;
 
 CONNECT scott/tiger@IMS;
 set lines 300 pages 300;
 -- however scott sees all data
+PROMPT Scott sees all data from his all appartments, i.e. 14 records
 select * from emp ORDER BY EmpNO ASC;
-
+QUIT
 
