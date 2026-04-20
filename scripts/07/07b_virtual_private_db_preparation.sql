@@ -59,5 +59,5 @@ EXCEPTION -- in case of any exception, e.g. user not found in EmpRoles, return a
       con := '0 = 1';
 END pf_job;
 /
+PROMPT continue with 07c_virtual_private_db_policy.sql to create the policy for the above function
 QUIT
--- continue with 07c_virtual_private_db_policy.sql to create the policy for the above function
