@@ -7,10 +7,10 @@ $CONTAINERCMD exec -it -u postgres Postgres /bin/bash
 
 set variables inside of docker container
 ```bash
-old_db=dvdrental
-new_db=dvdcopy
+old_db=ims
+new_db=imscopy
 mkdir /tmp/backups
-db_dump_file="/tmp/backups/dvdrental.pg.dump"
+db_dump_file="/tmp/backups/ims.pg.dump"
 ```
 
 export DB
@@ -32,7 +32,10 @@ pg_restore -U postgres -d "$new_db" "$db_dump_file"
 verify contents of DB using psql or pgadmin or similar client tool
 ```bash
 psql <<!
-\c dvdcopy
-select count(*) from dvd.actor;
+\c imscopy
+\echo this should find all system tables and the ones we have created
+select * from pg_catalog.pg_tables;
+\echo this should find 200 records in table 'actor'
+select count(*) from public.actor;
 !
 ```
