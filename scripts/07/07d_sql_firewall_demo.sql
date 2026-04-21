@@ -1,3 +1,14 @@
+-- first copy this script into your container using:
+-- $CONTAINERCMD cp ~student/DatabaseSecurity/scripts/07/07d_sql_firewall_demo.sql OracleFree:/tmp/
+-- then execute it using:
+-- sqlplus '/ as sysdba' @/tmp/07d_sql_firewall_demo.sql 
+
+-- fill following values, when you are asked for
+--Enter container name: IMS
+--Enter sys password: FhIms9999
+--Enter a DBA username who will be able to administer SQL Firewall and Audit: firewall
+--Enter random password that will be assigned to users created in the script: firewall1234
+
 set echo on
 -----------------------------------
 Rem Setup for the demo:
