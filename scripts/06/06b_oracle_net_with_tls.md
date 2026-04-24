@@ -123,7 +123,7 @@ $CONTAINERCMD cp ~student/DatabaseSecurity/scripts/06/sqlnet.ora.tls OracleFree:
 $CONTAINERCMD cp ~student/DatabaseSecurity/scripts/06/tnsnames.ora.tls OracleFree:/opt/oracle/oradata/dbconfig/FREE/tnsnames.ora
 ```
 
-after that restart listener (a potential error will be shown immediately)
+after that restart listener (a potential error will be shown immediately, if the listener was not running before, but the `start` should work)
 ```bash
 $CONTAINERCMD exec -it -u oracle OracleFree /bin/bash
 lsnrctl stop
