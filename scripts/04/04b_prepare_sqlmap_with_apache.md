@@ -16,6 +16,11 @@ Rocky Linux: modules are not supported anymore in latest dnf version, so php-fpm
 if [ -f /etc/redhat-release ]; then
    #yum search mod-php
    #dnf module enable php:8.3
+   # on e.g. RockyLinux SELinux is active, which per default blocks DB connects with Apache, so this shall be disabled
+   setsebool -P httpd_can_network_connect_db 1
+   # optionally we might generally disable SELinux (also for other tests)
+   setenforce 0
+   # enable php and restart apache web server
    systemctl enable --now php-fpm
    systemctl restart httpd
    httpd -M | grep proxy_fcgi
