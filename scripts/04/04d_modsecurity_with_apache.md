@@ -130,6 +130,18 @@ else
 fi
 ```
 
+in order to block info.php by modsecurity, you have to do the following on RedHat systems
+```bash
+if [ -f /etc/redhat-release ]; then
+   cat >>/etc/httpd/modsecurity.d/local_rules/modsecurity_localrules.conf <<!
+# blocks access to info.php
+SecRule REQUEST_URI "@contains /info.php" \
+   "id:10001,phase:2,deny,status:403,log,msg:'Zugriff auf info.php blockiert'"
+!
+   systemctl restart httpd
+fi
+```
+
 ## possible errors
 
 in case, that the browser shows exception like "Could not connect", then try php from command line, if this works
