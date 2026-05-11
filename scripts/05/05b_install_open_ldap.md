@@ -47,7 +47,7 @@ expected output e.g. is list of users, which we provided before in LDAP_USERS en
 > 
 >member: cn=readonly,ou=users,dc=example,dc=org
 
-check, if explicitely the data for this user can be retrieved (you have to provide the password of user `readonly`, which is `readonly123`)
+check, if explicitely the data for this user can be retrieved (you have to provide the password of user `readonly`, which is `readonlypwd123`)
 ```bash
 $CONTAINERCMD exec -it -u root Postgres /bin/bash
 ldapsearch -H ldap://openldap:1389 -W -D "cn=readonly,ou=users,dc=example,dc=org" -b "dc=example,dc=org" "uid=readonly"
