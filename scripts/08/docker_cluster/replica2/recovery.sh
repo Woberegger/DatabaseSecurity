@@ -1,7 +1,7 @@
 #!/bin/bash
 # This initializes the replica using pg_basebackup.
 # and additionally configures automatic failover
-PGDATA=/var/lib/postgresql/data
+PGDATA=/var/lib/postgresql/18/docker
 # Only clone if data directory is empty
 if [ ! -s "$PGDATA/PG_VERSION" ]; then
   echo "Cloning from primary..."

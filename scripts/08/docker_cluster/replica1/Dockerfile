@@ -1,5 +1,8 @@
 FROM postgres:latest
+USER root
 COPY recovery.sh /docker-entrypoint-initdb.d/recovery.sh
+RUN chmod +x /docker-entrypoint-initdb.d/recovery.sh
+USER postgres
 # we do this at the beginning to avoid creating of own DB in replicas, as this is skipped, when directory exists
 # avoid, that for some reason there are files in that directory
 RUN rm -Rf /var/lib/postgresql/*
