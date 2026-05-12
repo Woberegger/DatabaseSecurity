@@ -15,7 +15,7 @@ SET Role Scott;
 -- now see difference in output between current_user and session_user (here the one, which owns the objects)
 SELECT current_user, session_user;
 -- switch to the proper database, where our objects reside
-\c dvdrental
+\c ims
 -- describe one of the tables to see, if they exist
 \d dvd.customer
 SET search_path TO dvd, public;

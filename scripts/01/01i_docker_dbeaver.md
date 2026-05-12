@@ -19,6 +19,7 @@ we will use this later in session5 to test Postgres login with pgpass
 $CONTAINERCMD exec -i --tty=false -u root cloudbeaver /bin/bash <<!
 cd /root
 echo "*:5432:dvdrental:objectowner:my-secret-pw" >.pgpass
+echo "*:5432:ims:objectowner:my-secret-pw" >>.pgpass
 chmod 600 .pgpass
 !
 ```
