@@ -20,6 +20,7 @@ SELECT current_user, session_user;
 \d dvd.customer
 SET search_path TO dvd, public;
 -- and create a view on those tables, which we want to grant
+-- (granting access to the tables themselves is not necessary, unless we later write an instead-of trigger)
 CREATE OR REPLACE VIEW dvd.customer_list
 AS
 SELECT cu.customer_id AS id,
