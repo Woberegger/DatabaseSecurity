@@ -1,6 +1,6 @@
 # DBSec01 - prepare OpenStack
 
-## a) for Debian-based systems: necessary tools missing in default in stallation
+## a) for Debian-based systems: necessary tools missing in default installation
 
 ```bash
 apt -y install inetutils-telnet
@@ -15,10 +15,10 @@ apt -y install wireshark
 apt -y install gpg # needed for apt keys to add
 ```
 
-## b) for RedHat-based systems: necessary tools missing in default in stallation
+## b) for RedHat-based systems: necessary tools missing in default installation
 
 ```bash
-yum -y install inetutils-telnet
+yum -y install telnet
 yum -y install nmap
 yum -y install curl
 yum -y install wget
