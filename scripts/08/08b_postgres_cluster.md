@@ -44,7 +44,7 @@ $CONTAINERCMD-compose up -d primary
 
 we cannot do the following in Dockerfile, only after DB was once initialized
 ```bash
-$CONTAINERCMD cp primary/pg_hba.conf pg-primary:/var/lib/postgresql/data/pg_hba.conf
+$CONTAINERCMD cp primary/pg_hba.conf pg-primary:/var/lib/postgresql/18/docker/pg_hba.conf
 ```
 
 restart DB in order to get this new pg_hba.conf active

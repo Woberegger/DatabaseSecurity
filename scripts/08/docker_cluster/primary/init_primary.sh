@@ -9,7 +9,7 @@ psql -f /docker-entrypoint-initdb.d/init.sql
 #wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 #
 ## Install repmgr
-#apt-get update && apt-get install -y postgresql-17-repmgr
+#apt-get update && apt-get install -y postgresql-18-repmgr
 # 
 ## Register primary node
 #su - postgres -c "repmgr -f /etc/repmgr.conf primary register"
