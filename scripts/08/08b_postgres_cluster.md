@@ -72,7 +72,7 @@ $CONTAINERCMD exec -it pg-primary psql -U replica -c "SELECT * FROM pg_stat_repl
 
 expected result: *You should see 2 replicas connected*
 
-and then check the repmgr nodes (only works: when repmgr is installed according to outcommented lines in script init_primary.sh)
+and then check the repmgr nodes (only works: when repmgr is installed according to script 08d_install_repmgr.md)
 ```bash
 $CONTAINERCMD exec -it pg-primary psql -U postgres -d replica -c "SELECT * FROM repmgr.nodes;"
 ```
