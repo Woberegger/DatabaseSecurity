@@ -9,7 +9,6 @@ services:
       
     volumes:
       - primary-data:/var/lib/postgresql
-      - ./primary/init_primary.sh:/docker-entrypoint-initdb.d/init_primary.sh
     ports:
       - "5433:5432"
     networks:
@@ -23,8 +22,7 @@ services:
       POSTGRES_PASSWORD: replica_pass
     volumes:
       - replica1-data:/var/lib/postgresql
-      - ./replica1/recovery.sh:/docker-entrypoint-initdb.d/recovery.sh
-    depends_on:
+     depends_on:
       - primary
     ports:
       - "5434:5432"      
@@ -39,7 +37,6 @@ services:
       POSTGRES_PASSWORD: replica_pass
     volumes:
       - replica2-data:/var/lib/postgresql
-      - ./replica2/recovery.sh:/docker-entrypoint-initdb.d/recovery.sh
     depends_on:
       - primary
     ports:

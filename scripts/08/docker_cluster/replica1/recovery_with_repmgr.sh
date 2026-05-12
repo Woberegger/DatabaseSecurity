@@ -8,14 +8,14 @@ apt-get update && apt-get install -y wget
 echo "deb http://apt.postgresql.org/pub/repos/apt bookworm-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 #
-apt-get update && apt-get install -y postgresql-17-repmgr
+apt-get update && apt-get install -y postgresql-18-repmgr
 
 service postgresql stop
 su - postgres
 # rm the database, which is installed per default in the image
-rm -Rf /var/lib/postgresql/data/PG_VERSION /var/lib/postgresql/data/base /var/lib/postgresql/data/global /var/lib/postgresql/data/pg_*
-# check if variable is correctly set to /var/lib/postgresql/data
-export PGDATA=/var/lib/postgresql/data
+rm -Rf /var/lib/postgresql/18/docker/PG_VERSION /var/lib/postgresql/18/docker/base /var/lib/postgresql/18/docker/global /var/lib/postgresql/18/docker/pg_*
+# check if variable is correctly set to /var/lib/postgresql/18/docker
+export PGDATA=/var/lib/postgresql/18/docker
 if [ ! -s "$PGDATA" ]; then
   echo "Cloning from primary..."
   export PGPASSWORD=my-secret-pw #replica_pass
