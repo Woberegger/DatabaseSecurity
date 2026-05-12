@@ -6,7 +6,6 @@ BEGIN
       CREATE ROLE replica WITH REPLICATION LOGIN ENCRYPTED PASSWORD 'replica_pass';
       CREATE DATABASE replica WITH OWNER replica;
       SET Role replica;
-      \connect replica;
       CREATE SCHEMA IF NOT EXISTS repschema;
       SET SCHEMA 'repschema';
       SELECT current_schema();
