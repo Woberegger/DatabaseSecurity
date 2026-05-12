@@ -1,7 +1,7 @@
 #!/bin/bash
 # do necessary first installation steps, i.e. create users and tables
 # this script is anyway called as "postgres" user
-psql -f /docker-entrypoint-initdb.d/init.sql
+psql -f /tmp/init.sql
 
 # and also the following we need to do manually as root user instead
 #apt-get update && apt-get install -y wget
