@@ -41,6 +41,7 @@ node <<!
 
 then call connection test 10b_mongodb_connect.js
 ```bash
+cd ~rocky
 cp ~student/DatabaseSecurity/scripts/10/10b_mongodb_connect.js .
 node 10b_mongodb_connect.js
 ```
