@@ -6,8 +6,12 @@ $db = $client->selectDatabase('ims');
 $collection = $db->selectCollection('students');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = $_POST["name"]; // pass something like  { "$ne": null }
-    $course = $_POST["course"]; // pass something like  { "$ne": null }
+    // Liest den rohen JSON-Body der Anfrage (z.B. von einer API oder Postman)
+    $jsonInput = file_get_contents('php://input');
+    $data = json_decode($jsonInput, true); // true macht daraus ein assoziatives Array
+
+    $name = $data["name"] ?? null;
+    $course = $data["course"] ?? null;
 
     // ⚠️ Vulnerable query (no input sanitization)
     $query = ['name' => $name, 'course' => $course];
@@ -22,7 +26,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 <form method="POST">
+    <!-- Der Angreifer gibt im Value-Feld z.B. "null" ein -->
     <label>Student: <input name="name" /></label><br>
-    <label>Course: <input name="course" /></label><br>
+    <label>Course: <input name="course" value="IMS" /></label><br>
     <button type="submit">Query</button>
 </form>

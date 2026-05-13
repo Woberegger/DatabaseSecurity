@@ -70,12 +70,13 @@ open following website in brower, it should show loaded module mongodb<br>
 copy file 10d_test_nosql_inj.php to /var/www/html/php-quickstart/, where we have the mongoDB libraries
 ```bash
 cp ~student/DatabaseSecurity/scripts/10/10d_test_nosql_inj.php /var/www/html/php-quickstart/quickstart.php
+cp ~student/DatabaseSecurity/scripts/10/10d_test_nosql_inj_json.php /var/www/html/php-quickstart/quickstart_json.php
 ```
 
 then call web screen (replace "dbsecX-IP" with the IP of your openStack VM)
 > [](http://<dbsecX-IP>/php-quickstart/quickstart.php)
 
-enter first correct data into form - this should return "Welcome, John Doe!"
+enter first correct data into form - this should return `Welcome, John Doe!`
 >Student: John Doe<br>
 >Course: IMS
 
@@ -83,9 +84,11 @@ then enter injected data into form, like:
 >Student: { "$ne": null }<br>
 >Course: { "$ne": null }
 
-optionally use curl from command line, this should also find the first Music student, which is `Wolfgang Amadeus Mozart` ...
+**IMPORTANT: this somehow does not work, but later the Mongomap tool properly finds out, how to inject the parameters ...**
+
+use curl for json inputs from command line, this should also find the first Music student, which is `Wolfgang Amadeus Mozart` ...
 ```bash
-curl -X POST http://localhost/php-quickstart/quickstart.php -H "Content-Type: application/json" -d '{"name": {"$ne": null}, "course": "Music"}'
+curl -X POST http://localhost/php-quickstart/quickstart_json.php -H "Content-Type: application/json" -d '{"name": {"$ne": null}, "course": "Music"}'
 ```
 
 in case of error check following file
