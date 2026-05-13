@@ -90,14 +90,9 @@ $CONTAINERCMD exec -it pg-replica1 psql -U replica -d replica -c "SELECT * FROM 
 
 ## restarting lecture from scratch
 
-**ONLY when you want to start from scratch, do the following 3 steps:**
-```bash
-$CONTAINERCMD-compose down
-$CONTAINERCMD volume rm docker_cluster_primary-data docker_cluster_replica1-data docker_cluster_replica2-data
-$CONTAINERCMD image rm docker_cluster-primary docker_cluster-replica1 docker_cluster-replica2
-```
+**ONLY when you want to start from scratch, then use 08c_remove_all_containers.md:**
 
-**ONLY in case that you have corrupted e.g. replica1, then call:**
+**ONLY in case that you have corrupted e.g. replica1, then call (but maybe also eliminate volume and image, if needed):**
 ```bash
 $CONTAINERCMD-compose down -r replica1
 ```
