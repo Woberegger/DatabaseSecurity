@@ -17,25 +17,45 @@ expected output should be similar to following one:
 in lecture 4 we have enabled ModSecurity WAF firewall, we should disable this again (only detect it, but to not prevent execution)
 (if nginx is used, see necessary changes to be undone for nginx in lecture 4)
 ```bash
-sed -i 's/SecRuleEngine On/SecRuleEngine DetectionOnly/' /etc/modsecurity/modsecurity.conf
+if [ -f /etc/redhat-release ]; then
+   export MODSEC_CFG=/etc/httpd/conf.d/mod_security.conf
+else
+   export MODSEC_CFG=/etc/modsecurity/modsecurity.conf
+fi
+sed -i 's/SecRuleEngine On/SecRuleEngine DetectionOnly/' $MODSEC_CFG
 ```
 
 restart apache, after having changed that parameter
 ```bash
-systemctl restart apache2
+apachectl -t
+if [ -f /etc/redhat-release ]; then
+   systemctl restart httpd
+else
+   systemctl restart apache2
+fi
 ```
 
 install python pymongo package
 ```bash
-apt install python3-pymongo
+if [ -f /etc/redhat-release ]; then
+   yum install -y python3-pymongo
+else
+   apt install -y python3-pymongo
+fi
 ```
 
 test python connection to mongodb
 ```bash
-python3 ~student/DatabaseSecurity/scripts/10/10c_mongodb_connect.py
+python3 ~student/DatabaseSecurity/scripts/10/10a_mongodb_connect.py
 ```
+
+expected result is:
+> ✅ Connected successfully to MongoDB.
 
 call the injection script
 ```bash
-python3 ~student/DatabaseSecurity/scripts/10/10c_test_nosql_inj.py
+python3 ~student/DatabaseSecurity/scripts/10/10a_test_nosql_inj.py
 ```
+
+expected result is:
+> Login bypassed! Found user: {'_id': ObjectId('....'), 'username': 'admincopy', 'password': 'secret'}
