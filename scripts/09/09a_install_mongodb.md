@@ -30,11 +30,6 @@ $CONTAINERCMD-compose -f 09b_mongodb-docker-compose.yaml up -d
 as GUI we will use IntelliJ, however if you want to install compass GUI, you can download it from following URL:<br>
 [Compass-GUI download link](https://downloads.mongodb.com/compass/mongodb-compass-1.46.1-win32-x64.exe)
 
-to connect to MongoDB from different docker, e.g. MongoDB Atlas execute
-```bash
-$CONTAINERCMD run -d --name MYAPP -e MONGODB_CONNSTRING=mongodb+srv://admin:my-secret-pw@clusterURL MYAPP:1.0
-```
-
 evaluate locally in mongoDB container, if docker container is working and connection is possible
 ```bash
 $CONTAINERCMD exec -it -u root mongodb mongosh mongodb://admin:my-secret-pw@mongodb:27017 --eval "show dbs;"
