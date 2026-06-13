@@ -87,7 +87,7 @@ select * from emp ORDER BY EmpNO ASC;
 CONNECT scott/tiger@IMS;
 set lines 300 pages 300;
 -- however scott sees all data
-PROMPT Scott sees all data from his all appartments, i.e. 14 records
+PROMPT Scott sees all data from all departments, i.e. 14 records
 select * from emp ORDER BY EmpNO ASC;
 QUIT
 
