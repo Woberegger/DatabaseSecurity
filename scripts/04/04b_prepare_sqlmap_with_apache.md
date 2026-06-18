@@ -45,6 +45,10 @@ copy the SQL-injection test file to our webserver directory
 cp ~student/DatabaseSecurity/scripts/04/test_sql_inj.php /var/www/html/
 ```
 ---
+you can first manually try to call the vulnerable page again (optionally from command line inside of the postgres container to avoid access problems from browser)
+```bash
+curl -G --data-urlencode "id=6 OR 1=1" "http://localhost/test_sql_inj.php"
+```
 
 then call sqlmap to find out about vulnerabilities of the web page. And you will see at the end lots of infos about our database schema, extracted from that single vulnerable web page!!!
 ```bash
