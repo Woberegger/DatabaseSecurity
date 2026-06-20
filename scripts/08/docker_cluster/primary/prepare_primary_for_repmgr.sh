@@ -13,5 +13,11 @@ apt-get update && apt-get install -y postgresql-18-repmgr
 su - postgres <<!
 repmgr -f /etc/repmgr.conf primary register
 !
+
+# add possibility to connect passwordless
+echo "*:*:*:replica:replica_pass" > ~/.pgpass
+echo "*:*:*:postgres:my-secret-pw" >> ~/.pgpass
+chmod 600 ~/.pgpass
+
 service postgresql stop
 service postgresql start
