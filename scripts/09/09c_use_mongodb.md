@@ -68,6 +68,8 @@ mongosh --username admin --password my-secret-pw
    db.students.find( {name: "John Doe" });
    // find any record, but only show columns "name" and "course" (1...show column, 0...hide column)
    db.students.find( {}, {name: 1, course: 1} );
+   // find all records, where field "course" exists and is not empty (this should find all others but Mozart)
+   db.students.find({ course: { $exists: true, $ne: null }});
    // now we have finally found a suitable study for Mozart ;-)
    db.students.updateOne( { name: "Wolfgang Amadeus Mozart" }, { $set: { course: "Music" } } );
    // MongoDB also knows a "Merge" operation, they call it "upsert" (as combination of update+insert)
