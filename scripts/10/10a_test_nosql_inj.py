@@ -18,20 +18,25 @@ db = client[auth_db]
 
 users = db.users
  
-# Setup: insert a new user
+# Setup: insert 2 new users into fresh table
+users.delete_many({ "username": {"$ne": None}});
+users.insert_one({"username": "testuser", "password": "whatever"})
 users.insert_one({"username": "admincopy", "password": "secret"})
- 
+
 # Simulated user input - Injection, this should find all users
 user_input = {
     "username": {"$ne": None},
     "password": {"$ne": None}
 }
- 
-user = users.find_one(user_input)
- 
-if user:
-    print("Login bypassed! Found user:", user)
+
+users = users.find(user_input)
+
+if users:
+   print("password provision bypassed! Found users:");
+   for u in users:
+      print(u)
+
 else:
-    print("Login failed.")
- 
+    print("Injection failed.")
+
 client.close()
