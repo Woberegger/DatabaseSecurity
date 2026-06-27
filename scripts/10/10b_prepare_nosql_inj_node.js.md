@@ -28,6 +28,7 @@ if [ -f /etc/redhat-release ]; then
 else
    apt install -y nodejs npm
 fi
+cd /usr/local/src
 npm install mongodb
 ```
 
@@ -41,7 +42,7 @@ node <<!
 
 then call connection test 10b_mongodb_connect.js
 ```bash
-cd ~rocky
+cd /usr/local/src
 cp ~student/DatabaseSecurity/scripts/10/10b_mongodb_connect.js .
 node 10b_mongodb_connect.js
 ```
