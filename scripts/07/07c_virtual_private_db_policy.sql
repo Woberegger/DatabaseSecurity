@@ -55,12 +55,17 @@ BEGIN
   /*DBMS_RLS.DROP_POLICY(object_schema     => 'SCOTT',
                        object_name       => 'EMP',
                        policy_name       => 'sp_job');*/
+                       
+  /*If you use sec_relevant_cols, the database completely filters out and hides the entire row if the user fails the security check.
+  With sec_relevant_cols_opt => DBMS_RLS.ALL_ROWS: The database displays all rows that match the query, but it replaces the values
+  in the protected columns with NULL for unauthorized users. */
   DBMS_RLS.ADD_POLICY (object_schema     => 'SCOTT',
                        object_name       => 'EMP',
                        policy_name       => 'sp_job',
                        function_schema   => 'SCOTT',
                        policy_function   => 'pf_job',
-                       sec_relevant_cols => 'SAL,COMM');
+                       sec_relevant_cols => 'SAL,COMM'                       
+                       );
 END;
 /
 
