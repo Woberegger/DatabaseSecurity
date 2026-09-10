@@ -5,7 +5,7 @@ see [DBeaver-Docker-Howto](https://github.com/dbeaver/cloudbeaver/wiki/Run-Docke
 ```bash
 $CONTAINERCMD pull dbeaver/cloudbeaver
 export NETWORK=my-docker-network
-# run container and provide port 8978 to access via http://<ip-of-OpenStackVM>:8978, e.g. http://dbsecip-of-OpenStackVM0:8978
+# run container and provide port 8978 to access via http://<ip-of-OpenStackVM>:8978, e.g. http://dbsec0:8978
 $CONTAINERCMD run --name cloudbeaver --network ${NETWORK} -ti -p 8978:8978 -d -v /opt/cloudbeaver/workspace --log-opt max-size=100m dbeaver/cloudbeaver:latest 
 ```
 
