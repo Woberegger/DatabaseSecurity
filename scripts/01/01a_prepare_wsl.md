@@ -5,9 +5,9 @@
 This is faster and easier than using a virtual machine (VMWare, VirtualBox etc.)
 
 We use a new, fresh distro so that any already installed distribution is not affected.
-See e.g. the instructions at [](https://superuser.com/questions/1515246/how-to-add-second-wsl2-ubuntu-distro-fresh-install)
+See e.g. the instructions at [WSL-Instructions](https://superuser.com/questions/1515246/how-to-add-second-wsl2-ubuntu-distro-fresh-install)
 
-1. Download a tar archive, e.g. for Distro 24.04 (because this image includes `systemd`) from [](https://cloud-images.ubuntu.com/wsl/noble/current/ubuntu-noble-wsl-amd64-ubuntu.rootfs.tar.gz)
+1. Download a tar archive, e.g. for Distro 24.04 (because this image includes `systemd`) from [Ubuntu-Image](https://cloud-images.ubuntu.com/wsl/noble/current/ubuntu-noble-wsl-amd64-ubuntu.rootfs.tar.gz)
 
 2. If never used before, first enable WSL (in `cmd.exe` or PowerShell, each as Administrator)
 ```PowerShell

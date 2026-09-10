@@ -23,4 +23,4 @@ or in `psql` command line with following syntax:<br>
 $CONTAINERCMD cp ~student/DatabaseSecurity/scripts/03/03b_use_audit_trigger.sql Postgres:/tmp/
 $CONTAINERCMD exec -it -u postgres Postgres psql -d ims -f /tmp/03b_use_audit_trigger.sql
 ```
-[](https://github.com/Woberegger/DatabaseSecurity/blob/main/scripts/03/03b_use_audit_trigger.sql)
+[03b_use_audit_trigger.sql](https://github.com/Woberegger/DatabaseSecurity/blob/main/scripts/03/03b_use_audit_trigger.sql)

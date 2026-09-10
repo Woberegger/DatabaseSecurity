@@ -2,7 +2,7 @@
 
 ## Instructions for using UTM virtualization on macOS
 
-Download from e.g. [](https://mac.getutm.app/)
+Download from e.g. [mac.getutm.app](https://mac.getutm.app/)
 
 Since the UTM CLI does not allow copy + paste with `Shift` + `Insert`, it is best to connect to the VM via SSH.
 You can copy your public SSH key to the VM with the following command:

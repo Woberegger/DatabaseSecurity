@@ -63,8 +63,9 @@ in lecture 4 we have enabled ModSecurity WAF firewall, we should disable this ag
 *this should already been done in script 10a_prepare_nosql_python.md (so not explained here again)*
 
 open following website in brower, it should show loaded module mongodb<br>
-(replace "dbsecX-IP" with the IP of your openStack VM)
->[](http://<dbsecX-IP>/info.php)
+(replace "\<dbsecX-IP\>" with the IP of your openStack VM)
+>http://\<dbsecX-IP\>/info.php<br>
+
 (if info.php should be missing, see lecture 4, how this should look like and where you should store it)
 
 copy file 10d_test_nosql_inj.php to /var/www/html/php-quickstart/, where we have the mongoDB libraries
@@ -73,8 +74,8 @@ cp ~student/DatabaseSecurity/scripts/10/10d_test_nosql_inj.php /var/www/html/php
 cp ~student/DatabaseSecurity/scripts/10/10d_test_nosql_inj_json.php /var/www/html/php-quickstart/quickstart_json.php
 ```
 
-then call web screen (replace "dbsecX-IP" with the IP of your openStack VM)
-> [](http://<dbsecX-IP>/php-quickstart/quickstart.php)
+then call web screen (replace "\<dbsecX-IP\>" with the IP of your openStack VM)
+> http://\<dbsecX-IP>\/php-quickstart/quickstart.php
 
 enter first correct data into form - this should return `Welcome, John Doe!`
 >Student: John Doe<br>

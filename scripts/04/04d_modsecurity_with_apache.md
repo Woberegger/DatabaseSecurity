@@ -101,7 +101,9 @@ fi
 
 ---
 
-after having tested SQL injection by calling [](http://<IP-Addr>/test_sql_inj.php?id=6%20OR%201=1)
+after having tested SQL injection by calling
+> http://\<IP-Addr\>/test_sql_inj.php?id=6%20OR%201=1<br>
+
 check the modsecurity log files about the detected security violation:
 
 ```bash

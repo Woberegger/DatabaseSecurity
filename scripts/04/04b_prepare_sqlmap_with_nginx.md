@@ -28,7 +28,7 @@ fi
 
 **!!! IMPORTANT !!!**
 do following adapations to file /etc/nginx/sites-available/default
-according to sample config part in file [](https://github.com/Woberegger/DatabaseSecurity/blob/main/scripts/04/04c_nginx_config_file.conf)
+according to sample config part in file [04c_nginx_config_file.conf](https://github.com/Woberegger/DatabaseSecurity/blob/main/scripts/04/04c_nginx_config_file.conf)
 
 validate config file - this should not show any errors
 ```bash

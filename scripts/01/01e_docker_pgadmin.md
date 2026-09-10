@@ -29,7 +29,7 @@ $CONTAINERCMD stop pgadmin4
 $CONTAINERCMD start pgadmin4
 ```
 
-in pgAdmin on web GUI [](http://<ip-of-OpenStackVM>:5050) you have to configure the server connection with that IP,<br>
+in pgAdmin on web GUI http://\<ip-of-OpenStackVM\>:5050 you have to configure the server connection with that IP,<br>
 which the previous `$CONTAINERCMD network inspect` call has returned for the container named "Postgres", so e.g. 172.20.160.2
 
 later, when the `pgadmin` container was stopped, you can simply start it again using following call:

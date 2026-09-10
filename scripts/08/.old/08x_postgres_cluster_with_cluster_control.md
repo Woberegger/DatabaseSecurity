@@ -82,7 +82,8 @@ cd /var/www/html/clustercontrol/app/tools/
 php -e password-reset.php7 w.oberegger@gmx.at
 ```
 
-open web page for clustercontrol [](http://localhost:5000/clustercontrol)
+open web page for clustercontrol:
+> http://\<OpenStack-IP\>:5000/clustercontrol
 
 interaktiver login über psql SQL-Commandline in den laufenden Container<br>
 über --tty=false kann man eine Kommandosequenz als Here-Document übergeben

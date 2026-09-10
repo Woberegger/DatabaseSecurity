@@ -2,7 +2,7 @@
 
 ## install docker container for openLdap
 
-see howto for openLdap docker container under [](https://hub.docker.com/r/bitnami/openldap)<br>
+see howto for openLdap docker container under [bitnami/openldap](https://hub.docker.com/r/bitnami/openldap)<br>
 Bitnami moved the old Debian-based images to bitnamilegacy, so without registration we have can more easy download from there (however not recommended for productive use)
 
 ```bash

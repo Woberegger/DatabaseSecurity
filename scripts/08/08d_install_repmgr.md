@@ -16,7 +16,7 @@ echo "deb [signed-by=/usr/share/keyrings/postgresql-archive-keyring.gpg] http://
 apt-get update && apt-get install -y postgresql-18-repmgr
 
 # manually create the link, which might be necessary due to different version
-ln -sf /usr/bin/repmgr /usr/lib/postgresql/18/bin/
+#ln -sf /usr/bin/repmgr /usr/lib/postgresql/18/bin/
 
 #Register primary node (for some reason this takes several minutes to succeed) - and optionally also the other ones
 su - postgres -c "repmgr -f /etc/repmgr.conf primary register"

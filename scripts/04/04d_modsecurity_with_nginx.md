@@ -2,7 +2,7 @@
 
 **TODO:**
 install necessary ModSecurity module for existing nginx installation
-see howto e.g. under [](https://www.linode.com/docs/guides/securing-nginx-with-modsecurity/)
+see howto e.g. under [securing-nginx-with-modsecurity](https://www.linode.com/docs/guides/securing-nginx-with-modsecurity/)
 
 modify nginx configuration to load modsecurity module
 ```bash
@@ -25,4 +25,4 @@ Include /etc/nginx/modsec/modsecurity.conf
 ```
 
 optionally download a prepared nginx with ModSecurity from link
-[](https://github.com/owasp-modsecurity/ModSecurity-nginx)
+[ModSecurity-nginx](https://github.com/owasp-modsecurity/ModSecurity-nginx)

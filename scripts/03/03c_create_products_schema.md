@@ -8,4 +8,4 @@ script to create schema `products` with tables, where current price and price hi
 $CONTAINERCMD cp ~student/DatabaseSecurity/scripts/03/03c_products.sql Postgres:/tmp/
 $CONTAINERCMD exec -it -u postgres Postgres psql -d ims -f /tmp/03c_products.sql
 ```
-[](https://github.com/Woberegger/DatabaseSecurity/blob/main/scripts/03/03c_products.sql)
+[03c_products.sql](https://github.com/Woberegger/DatabaseSecurity/blob/main/scripts/03/03c_products.sql)

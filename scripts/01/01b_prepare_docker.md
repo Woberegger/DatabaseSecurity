@@ -31,7 +31,7 @@ sudo -s
 fi
 ```
 **IMPORTANT**: On Debian/Ubuntu AppArmor can be configured, that it rejects "docker stop".
-   For that purpose copy this file  [](https://github.com/Woberegger/DatabaseSecurity/blob/main/scripts/01/docker)
+   For that purpose copy this file  [docker](https://github.com/Woberegger/DatabaseSecurity/blob/main/scripts/01/docker)
    to the openstack platform with command, as described in line 1 of the script:
 
 ```bash

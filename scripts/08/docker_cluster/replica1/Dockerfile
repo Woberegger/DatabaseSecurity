@@ -1,7 +1,8 @@
 FROM postgres:latest
 USER root
-COPY recovery.sh /docker-entrypoint-initdb.d/recovery.sh
-RUN chmod +x /docker-entrypoint-initdb.d/recovery.sh
+# we cannot copy this to /docker-entrypoint-initdb.d/recovery.sh directly, as otherwise it is called too late
+COPY recovery.sh /usr/local/bin/recovery.sh 
+RUN chmod +x /usr/local/bin/recovery.sh
 USER postgres
 # we do this at the beginning to avoid creating of own DB in replicas, as this is skipped, when directory exists
 # avoid, that for some reason there are files in that directory
@@ -12,3 +13,5 @@ RUN rm -Rf /var/lib/postgresql/*
 #COPY postgresql.conf /var/lib/postgresql/postgresql.conf
 #COPY recovery.conf /var/lib/postgresql/recovery.conf
 COPY repmgr.conf /etc/repmgr.conf
+ENTRYPOINT ["/usr/local/bin/recovery.sh"]
+CMD ["postgres"]
